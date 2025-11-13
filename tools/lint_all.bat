@@ -1,0 +1,1 @@
+start powershell -command "& './scripts/lint_all.ps1'"

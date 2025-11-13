@@ -22,9 +22,12 @@ if (-not $files -or $files.Count -eq 0) {
     exit 0
 }
 
+Write-Host "File found:"
 $files | ForEach-Object { Write-Host "  $_" }
 
+Write-Host ""
 & "gdscript-formatter" "lint" "--pretty" @files
 
+Write-Host ""
 Write-Host -NoNewLine 'Press any key to continue...';
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
