@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfepkha8wn45i"]
+
+[ext_resource type="Script" uid="uid://d2yyfiby2jtft" path="res://scenes/menu/bug_report/bug_report.gd" id="1_0vyux"]
+
+[node name="BugReport" type="Window"]
+oversampling_override = 1.0
+title = "Bug Report"
+initial_position = 2
+size = Vector2i(450, 500)
+unresizable = true
+popup_window = true
+minimize_disabled = true
+maximize_disabled = true
+script = ExtResource("1_0vyux")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Container" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/MarginContainer/Container"]
+layout_mode = 2
+text = "Thank you for taking the time to submit a bug or a feedback. We read all comments!
+
+"
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer/Container/HBoxContainer"]
+layout_mode = 2
+text = "Type"
+
+[node name="ReportTypeOption" type="OptionButton" parent="CanvasLayer/MarginContainer/Container/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "Bug"
+popup/item_0/id = 0
+popup/item_1/text = "Feedback"
+popup/item_1/id = 1
+popup/item_2/text = "Suggestion"
+popup/item_2/id = 2
+
+[node name="SummaryEdit" type="LineEdit" parent="CanvasLayer/MarginContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Summary"
+max_length = 40
+
+[node name="DetailEdit" type="TextEdit" parent="CanvasLayer/MarginContainer/Container"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Detail"
+
+[node name="EmailEdit" type="LineEdit" parent="CanvasLayer/MarginContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Email (optional)"
+
+[node name="SendButton" type="Button" parent="CanvasLayer/MarginContainer/Container"]
+layout_mode = 2
+text = "SEND"
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Container/SendButton" to="." method="_on_send_button_pressed"]
