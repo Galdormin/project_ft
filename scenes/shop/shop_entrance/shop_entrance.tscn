@@ -1,29 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://1sgeh4i2ocr0"]
+[gd_scene format=3 uid="uid://1sgeh4i2ocr0"]
 
 [ext_resource type="Texture2D" uid="uid://8ekgdq5r44h5" path="res://scenes/shop/shop_entrance/assets/background.png" id="1_ggvpp"]
 [ext_resource type="Texture2D" uid="uid://c70f1232b4o44" path="res://scenes/shop/shop_entrance/assets/wood.jpg" id="1_oohh6"]
 [ext_resource type="Texture2D" uid="uid://jvctrcxcqbaa" path="res://scenes/shop/shop_entrance/assets/street.jpg" id="1_x77iv"]
 [ext_resource type="Texture2D" uid="uid://hwkrqf4uds4a" path="res://scenes/shop/shop_entrance/assets/door.png" id="4_vya3x"]
 
-[node name="ShopEntrance" type="Node2D"]
+[node name="ShopEntrance" type="Node2D" unique_id=726382332]
 
-[node name="Street" type="Sprite2D" parent="."]
+[node name="Street" type="Sprite2D" parent="." unique_id=1025404183]
 position = Vector2(955.00006, 514)
 scale = Vector2(1.2203898, 1.1813186)
 texture = ExtResource("1_x77iv")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1040645554]
 position = Vector2(0.00012207031, 6.1035156e-05)
 scale = Vector2(0.99999994, 0.99999994)
 texture = ExtResource("1_ggvpp")
 centered = false
 
-[node name="Desk" type="Sprite2D" parent="."]
+[node name="Desk" type="Sprite2D" parent="." unique_id=408273335]
 position = Vector2(961.99994, 965)
 scale = Vector2(2.9468892, 0.70555556)
 texture = ExtResource("1_oohh6")
 
-[node name="Door" type="Sprite2D" parent="."]
+[node name="Door" type="Sprite2D" parent="." unique_id=1128339841]
 position = Vector2(846, 353)
 scale = Vector2(0.6, 0.59183675)
 texture = ExtResource("4_vya3x")

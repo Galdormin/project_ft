@@ -1,12 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8hbu8l8kncmo"]
+[gd_scene format=3 uid="uid://c8hbu8l8kncmo"]
 
 [ext_resource type="PackedScene" uid="uid://1sgeh4i2ocr0" path="res://scenes/shop/shop_entrance/shop_entrance.tscn" id="1_vxj7x"]
 [ext_resource type="PackedScene" uid="uid://dcb5tax3h7c1" path="res://scenes/dialogue/recap_balloon/recap_balloon.tscn" id="2_d32op"]
 
-[node name="ShopMain" type="Node2D"]
+[node name="ShopMain" type="Node2D" unique_id=806536594]
 
-[node name="ShopEntrance" parent="." instance=ExtResource("1_vxj7x")]
+[node name="ShopEntrance" parent="." unique_id=825147829 instance=ExtResource("1_vxj7x")]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1284566562]
 
-[node name="RecapBalloon" parent="CanvasLayer" instance=ExtResource("2_d32op")]
+[node name="RecapBalloon" parent="CanvasLayer" unique_id=449813091 instance=ExtResource("2_d32op")]

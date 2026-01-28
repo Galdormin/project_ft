@@ -8,9 +8,11 @@
 
 config_version=5
 
-[animation]
+[GDScript_Formatter]
 
-compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+custom_settings_enabled=true
+line_length=144
+format_on_save=true
 
 [application]
 

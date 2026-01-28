@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcb5tax3h7c1"]
+[gd_scene format=3 uid="uid://dcb5tax3h7c1"]
 
 [ext_resource type="Script" uid="uid://dbpptssj0hgu2" path="res://scenes/dialogue/recap_balloon/recap_balloon.gd" id="1_clbpk"]
 [ext_resource type="Texture2D" uid="uid://du2md7kr7bq5s" path="res://scenes/dialogue/recap_balloon/assets/arrow_left.png" id="1_fblqv"]
@@ -93,7 +93,7 @@ _data = {
 &"open_panel": SubResource("Animation_xxcs5")
 }
 
-[node name="RecapBalloon" type="Control"]
+[node name="RecapBalloon" type="Control" unique_id=304464001]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -102,7 +102,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_clbpk")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1051680047]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -112,7 +112,7 @@ offset_right = 560.0005
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=95327596]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,37 +124,37 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer" unique_id=77302687]
 layout_mode = 2
 
-[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/ScrollContainer"]
+[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/ScrollContainer" unique_id=1514695861]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MessageText" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer"]
+[node name="MessageText" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1939476282]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=red]JOHN[/color] --- [indent]Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.[/indent]"
 fit_content = true
 shortcut_keys_enabled = false
 
-[node name="MessageText2" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer"]
+[node name="MessageText2" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1474097914]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=green]ROBERT[/color] --- [indent]Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.[/indent]"
 fit_content = true
 shortcut_keys_enabled = false
 
-[node name="MessageText3" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer"]
+[node name="MessageText3" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1748064903]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=red]JOHN[/color] --- [indent]Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.[/indent]"
 fit_content = true
 shortcut_keys_enabled = false
 
-[node name="TextureButton" type="TextureButton" parent="Panel"]
+[node name="TextureButton" type="TextureButton" parent="Panel" unique_id=537436634]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -166,10 +166,8 @@ offset_bottom = 32.0
 grow_vertical = 2
 texture_normal = ExtResource("1_fblqv")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1424629969]
 unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_cdywq")
-}
+libraries/ = SubResource("AnimationLibrary_cdywq")
 
 [connection signal="pressed" from="Panel/TextureButton" to="." method="_on_texture_button_pressed"]

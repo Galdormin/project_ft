@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c8oe7syice3gn"]
+[gd_scene format=3 uid="uid://c8oe7syice3gn"]
 
 [ext_resource type="Script" uid="uid://bevtps6oiqmsj" path="res://scenes/dialogue/fade_balloon/fade_balloon.gd" id="1_da0f4"]
 [ext_resource type="Script" uid="uid://bb52rsfwhkxbn" path="res://addons/dialogue_manager/dialogue_responses_menu.gd" id="3_8k0cg"]
@@ -114,11 +114,11 @@ _data = {
 &"RESET": SubResource("Animation_da0f4")
 }
 
-[node name="FadeBalloon" type="CanvasLayer"]
+[node name="FadeBalloon" type="CanvasLayer" unique_id=1425968064]
 layer = 100
 script = ExtResource("1_da0f4")
 
-[node name="Balloon" type="Control" parent="."]
+[node name="Balloon" type="Control" parent="." unique_id=1240993579]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
@@ -128,7 +128,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_qq3yp")
 
-[node name="MarginContainer" type="MarginContainer" parent="Balloon"]
+[node name="MarginContainer" type="MarginContainer" parent="Balloon" unique_id=688416066]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,11 +140,11 @@ theme_override_constants/margin_top = 150
 theme_override_constants/margin_right = 150
 theme_override_constants/margin_bottom = 150
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Balloon/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Balloon/MarginContainer" unique_id=462306583]
 layout_mode = 2
 alignment = 1
 
-[node name="DialogueLabel" type="RichTextLabel" parent="Balloon/MarginContainer/VBoxContainer"]
+[node name="DialogueLabel" type="RichTextLabel" parent="Balloon/MarginContainer/VBoxContainer" unique_id=1206094179]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -155,7 +155,7 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/MarginContainer/VBoxContainer" node_paths=PackedStringArray("response_template")]
+[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/MarginContainer/VBoxContainer" unique_id=445233194 node_paths=PackedStringArray("response_template")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
@@ -165,15 +165,13 @@ alignment = 1
 script = ExtResource("3_8k0cg")
 response_template = NodePath("ResponseExample")
 
-[node name="ResponseExample" type="Button" parent="Balloon/MarginContainer/VBoxContainer/ResponsesMenu"]
+[node name="ResponseExample" type="Button" parent="Balloon/MarginContainer/VBoxContainer/ResponsesMenu" unique_id=1694784413]
 layout_mode = 2
 text = "Response example"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=902850233]
 unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_8k0cg")
-}
+libraries/ = SubResource("AnimationLibrary_8k0cg")
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
 [connection signal="response_selected" from="Balloon/MarginContainer/VBoxContainer/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]
