@@ -10,7 +10,7 @@ jobs:
     tests:
         runs-on: ubuntu-latest
         env:
-            GODOT_VERSION: "4.5.1"
+            GODOT_VERSION: "4.6.0"
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
