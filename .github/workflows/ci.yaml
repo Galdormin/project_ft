@@ -42,7 +42,8 @@ jobs:
 
             - name: Run Code Analysis
               run: |
-                  godot --headless --path . --script res://addons/gdscript-linter/analyzer/analyze-cli.gd -- --clickable
+                  godot --headless --import
+                  godot --headless --script res://addons/gdscript-linter/analyzer/analyze-cli.gd
 
     lint:
         runs-on: ubuntu-latest
