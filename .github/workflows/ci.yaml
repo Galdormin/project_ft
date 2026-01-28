@@ -6,11 +6,13 @@ on:
     pull_request:
         branches: [main]
 
+env:
+    GODOT_VERSION: "4.6.0"
+
 jobs:
     tests:
         runs-on: ubuntu-latest
-        env:
-            GODOT_VERSION: "4.6.0"
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -25,6 +27,22 @@ jobs:
               run: |
                   godot --headless --import
                   godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig res://tests/gutconfig.json
+
+    analyze:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Godot
+              uses: chickensoft-games/setup-godot@v2
+              with:
+                  version: ${{ env.GODOT_VERSION }}
+                  use-dotnet: false
+
+            - name: Run Code Analysis
+              run: |
+                  godot --headless --path . --script res://addons/gdscript-linter/analyzer/analyze-cli.gd -- --clickable
 
     lint:
         runs-on: ubuntu-latest
@@ -86,4 +104,4 @@ jobs:
                       exit 0
                   fi
 
-                  "$FORMATTER_BIN" lint --pretty "${files[@]}"
+                  "$FORMATTER_BIN" lint --max-line-length 144 --pretty "${files[@]}"

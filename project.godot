@@ -11,8 +11,8 @@ config_version=5
 [GDScript_Formatter]
 
 custom_settings_enabled=true
-line_length=144
 format_on_save=true
+line_length=144
 
 [application]
 
