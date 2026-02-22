@@ -52,10 +52,10 @@ var translation_source: DMConstants.TranslationSource = DMConstants.TranslationS
 
 ## Used to resolve the current scene. Override if your game manages the current scene itself.
 var get_current_scene: Callable = func():
-	var current_scene: Node = Engine.get_main_loop().current_scene
-	if current_scene == null:
-		current_scene = Engine.get_main_loop().root.get_child(Engine.get_main_loop().root.get_child_count() - 1)
-	return current_scene
+    var current_scene: Node = Engine.get_main_loop().current_scene
+    if current_scene == null:
+        current_scene = Engine.get_main_loop().root.get_child(Engine.get_main_loop().root.get_child_count() - 1)
+    return current_scene
 
 var _has_loaded_autoloads: bool = false
 var _autoloads: Dictionary = {}
@@ -69,171 +69,171 @@ var _expression_parser: DMExpressionParser = DMExpressionParser.new()
 
 
 func _ready() -> void:
-	# Cache the known Node2D properties
-	_node_properties = ["Script Variables"]
-	var temp_node: Node2D = Node2D.new()
-	for property in temp_node.get_property_list():
-		_node_properties.append(property.name)
-	temp_node.free()
+    # Cache the known Node2D properties
+    _node_properties = ["Script Variables"]
+    var temp_node: Node2D = Node2D.new()
+    for property in temp_node.get_property_list():
+        _node_properties.append(property.name)
+    temp_node.free()
 
-	# Make the dialogue manager available as a singleton
-	if not Engine.has_singleton("DialogueManager"):
-		Engine.register_singleton("DialogueManager", self)
+    # Make the dialogue manager available as a singleton
+    if not Engine.has_singleton("DialogueManager"):
+        Engine.register_singleton("DialogueManager", self)
 
 
 ## Step through lines and run any mutations until we either hit some dialogue or the end of the conversation
 func get_next_dialogue_line(resource: DialogueResource, key: String = "", extra_game_states: Array = [], mutation_behaviour: DMConstants.MutationBehaviour = DMConstants.MutationBehaviour.Wait) -> DialogueLine:
-	var line = await _get_next_dialogue_line(resource, key, extra_game_states, mutation_behaviour)
-	if line == null:
-		# End the conversation
-		dialogue_ended.emit(resource)
-	return line
+    var line = await _get_next_dialogue_line(resource, key, extra_game_states, mutation_behaviour)
+    if line == null:
+        # End the conversation
+        dialogue_ended.emit(resource)
+    return line
 
 
 # Internal line getter.
 func _get_next_dialogue_line(resource: DialogueResource, key: String = "", extra_game_states: Array = [], mutation_behaviour: DMConstants.MutationBehaviour = DMConstants.MutationBehaviour.Wait) -> DialogueLine:
-	# You have to provide a valid dialogue resource
-	if resource == null:
-		assert(false, DMConstants.translate(&"runtime.no_resource"))
-	if resource.lines.size() == 0:
-		assert(false, DMConstants.translate(&"runtime.no_content").format({ file_path = resource.resource_path }))
+    # You have to provide a valid dialogue resource
+    if resource == null:
+        assert(false, DMConstants.translate(&"runtime.no_resource"))
+    if resource.lines.size() == 0:
+        assert(false, DMConstants.translate(&"runtime.no_content").format({ file_path = resource.resource_path }))
 
-	# Inject any "using" states into the game_states
-	for state_name in resource.using_states:
-		var autoload = Engine.get_main_loop().root.get_node_or_null(state_name)
-		if autoload == null:
-			printerr(DMConstants.translate(&"runtime.unknown_autoload").format({ autoload = state_name }))
-		else:
-			extra_game_states = [autoload] + extra_game_states
+    # Inject any "using" states into the game_states
+    for state_name in resource.using_states:
+        var autoload = Engine.get_main_loop().root.get_node_or_null(state_name)
+        if autoload == null:
+            printerr(DMConstants.translate(&"runtime.unknown_autoload").format({ autoload = state_name }))
+        else:
+            extra_game_states = [autoload] + extra_game_states
 
-	# Inject "self" into the extra game states.
-	extra_game_states = [{ "self": resource }] + extra_game_states
+    # Inject "self" into the extra game states.
+    extra_game_states = [{ "self": resource }] + extra_game_states
 
-	# Get the line data
-	var dialogue: DialogueLine = await get_line(resource, key, extra_game_states)
+    # Get the line data
+    var dialogue: DialogueLine = await get_line(resource, key, extra_game_states)
 
-	# If our dialogue is nothing then we hit the end
-	if not _is_valid(dialogue):
-		return null
+    # If our dialogue is nothing then we hit the end
+    if not _is_valid(dialogue):
+        return null
 
-	# Run the mutation if it is one
-	if dialogue.type == DMConstants.TYPE_MUTATION:
-		var actual_next_id: String = dialogue.next_id.split("|")[0]
-		match mutation_behaviour:
-			DMConstants.MutationBehaviour.Wait:
-				await _mutate(dialogue.mutation, extra_game_states)
-			DMConstants.MutationBehaviour.DoNotWait:
-				_mutate(dialogue.mutation, extra_game_states)
-			DMConstants.MutationBehaviour.Skip:
-				pass
-		if actual_next_id in [DMConstants.ID_END_CONVERSATION, DMConstants.ID_NULL, null]:
-			return null
-		else:
-			return await _get_next_dialogue_line(resource, dialogue.next_id, extra_game_states, mutation_behaviour)
-	else:
-		got_dialogue.emit(dialogue)
-		return dialogue
+    # Run the mutation if it is one
+    if dialogue.type == DMConstants.TYPE_MUTATION:
+        var actual_next_id: String = dialogue.next_id.split("|")[0]
+        match mutation_behaviour:
+            DMConstants.MutationBehaviour.Wait:
+                await _mutate(dialogue.mutation, extra_game_states)
+            DMConstants.MutationBehaviour.DoNotWait:
+                _mutate(dialogue.mutation, extra_game_states)
+            DMConstants.MutationBehaviour.Skip:
+                pass
+        if actual_next_id in [DMConstants.ID_END_CONVERSATION, DMConstants.ID_NULL, null]:
+            return null
+        else:
+            return await _get_next_dialogue_line(resource, dialogue.next_id, extra_game_states, mutation_behaviour)
+    else:
+        got_dialogue.emit(dialogue)
+        return dialogue
 
 
 ## Get a line by its ID
 func get_line(resource: DialogueResource, key: String, extra_game_states: Array) -> DialogueLine:
-	key = key.strip_edges()
+    key = key.strip_edges()
 
-	# See if we were given a stack instead of just the one key
-	var stack: Array = key.split("|")
-	key = stack.pop_front()
-	var id_trail: String = "" if stack.size() == 0 else "|" + "|".join(stack)
+    # See if we were given a stack instead of just the one key
+    var stack: Array = key.split("|")
+    key = stack.pop_front()
+    var id_trail: String = "" if stack.size() == 0 else "|" + "|".join(stack)
 
-	# Resolve this line reference to use the correct resource
-	var previous_resource: DialogueResource = resource
-	if "@" in key:
-		var bits: PackedStringArray = key.split("@")
-		if bits[0] != _get_resource_uid(resource):
-			resource = load("uid://" + bits[0])
-		key = bits[1]
+    # Resolve this line reference to use the correct resource
+    var previous_resource: DialogueResource = resource
+    if "@" in key:
+        var bits: PackedStringArray = key.split("@")
+        if bits[0] != _get_resource_uid(resource):
+            resource = load("uid://" + bits[0])
+        key = bits[1]
 
-	# Key is blank so just use the first title (or start of file)
-	if key == null or key == "":
-		if resource.first_title.is_empty():
-			key = resource.lines.keys()[0]
-		else:
-			key = resource.first_title
+    # Key is blank so just use the first title (or start of file)
+    if key == null or key == "":
+        if resource.first_title.is_empty():
+            key = resource.lines.keys()[0]
+        else:
+            key = resource.first_title
 
-	# See if we just ended the conversation
-	if key in [DMConstants.ID_END, DMConstants.ID_NULL, null]:
-		if stack.size() > 0:
-			return await get_line(resource, "|".join(stack), extra_game_states)
-		else:
-			return null
-	elif key == DMConstants.ID_END_CONVERSATION:
-		return null
+    # See if we just ended the conversation
+    if key in [DMConstants.ID_END, DMConstants.ID_NULL, null]:
+        if stack.size() > 0:
+            return await get_line(resource, "|".join(stack), extra_game_states)
+        else:
+            return null
+    elif key == DMConstants.ID_END_CONVERSATION:
+        return null
 
-	# See if it is a title
-	if key.begins_with("~ "):
-		key = key.substr(2)
-	if resource.titles.has(key):
-		key = resource.titles.get(key)
-		# Handle the resource reference if the title had one
-		if "@" in key:
-			var bits: PackedStringArray = key.split("@")
-			if bits[0] != _get_resource_uid(resource):
-				resource = load("uid://" + bits[0])
-			key = bits[1]
+    # See if it is a title
+    if key.begins_with("~ "):
+        key = key.substr(2)
+    if resource.titles.has(key):
+        key = resource.titles.get(key)
+        # Handle the resource reference if the title had one
+        if "@" in key:
+            var bits: PackedStringArray = key.split("@")
+            if bits[0] != _get_resource_uid(resource):
+                resource = load("uid://" + bits[0])
+            key = bits[1]
 
-	if key in resource.titles.values():
-		passed_title.emit(resource.titles.find_key(key))
+    if key in resource.titles.values():
+        passed_title.emit(resource.titles.find_key(key))
 
-	if not resource.lines.has(key):
-		assert(false, DMConstants.translate(&"errors.key_not_found").format({ key = key }))
+    if not resource.lines.has(key):
+        assert(false, DMConstants.translate(&"errors.key_not_found").format({ key = key }))
 
-	var data: Dictionary = resource.lines.get(key)
+    var data: Dictionary = resource.lines.get(key)
 
-	# If next_id is an expression we need to resolve it.
-	if data.has(&"next_id_expression"):
-		data.next_id = await _resolve(data.next_id_expression, extra_game_states)
+    # If next_id is an expression we need to resolve it.
+    if data.has(&"next_id_expression"):
+        data.next_id = await _resolve(data.next_id_expression, extra_game_states)
 
-	# This title key points to another title key so we should jump there instead
-	if data.type == DMConstants.TYPE_TITLE and data.next_id in resource.titles.values():
-		return await get_line(resource, data.next_id + id_trail, extra_game_states)
+    # This title key points to another title key so we should jump there instead
+    if data.type == DMConstants.TYPE_TITLE and data.next_id in resource.titles.values():
+        return await get_line(resource, data.next_id + id_trail, extra_game_states)
 
-	# Handle match statements
-	if data.type == DMConstants.TYPE_MATCH:
-		var value = await _resolve_condition_value(data, extra_game_states)
-		var else_cases: Array[Dictionary] = data.cases.filter(func(s): return s.has("is_else"))
-		var else_case: Dictionary = {} if else_cases.size() == 0 else else_cases.front()
-		var next_id: String = ""
-		for case in data.cases:
-			if case == else_case:
-				continue
-			elif await _check_case_value(value, case, extra_game_states):
-				next_id = case.next_id
-				break
-		# Nothing matched so check for else case
-		if next_id == "":
-			if not else_case.is_empty():
-				next_id = else_case.next_id
-			else:
-				next_id = data.next_id_after
-		return await get_line(resource, next_id + id_trail, extra_game_states)
+    # Handle match statements
+    if data.type == DMConstants.TYPE_MATCH:
+        var value = await _resolve_condition_value(data, extra_game_states)
+        var else_cases: Array[Dictionary] = data.cases.filter(func(s): return s.has("is_else"))
+        var else_case: Dictionary = {} if else_cases.size() == 0 else else_cases.front()
+        var next_id: String = ""
+        for case in data.cases:
+            if case == else_case:
+                continue
+            elif await _check_case_value(value, case, extra_game_states):
+                next_id = case.next_id
+                break
+        # Nothing matched so check for else case
+        if next_id == "":
+            if not else_case.is_empty():
+                next_id = else_case.next_id
+            else:
+                next_id = data.next_id_after
+        return await get_line(resource, next_id + id_trail, extra_game_states)
 
-	# Check for weighted random lines.
-	if data.has(&"siblings"):
-		# Only count siblings that pass their condition (if they have one).
-		var successful_siblings: Array = data.siblings.filter(func(sibling): return not sibling.has("condition") or await _check_condition(sibling, extra_game_states))
-		# If there are no siblings that pass their conditions then just skip over them all.
-		if successful_siblings.size() == 0:
-			return await get_line(resource, data.next_id + id_trail, extra_game_states)
-		# Otherwise, pick a random one.
-		var target_weight: float = randf_range(0, successful_siblings.reduce(func(total, sibling): return total + sibling.weight, 0))
-		var cummulative_weight: float = 0
-		for sibling in successful_siblings:
-			if target_weight < cummulative_weight + sibling.weight:
-				data = resource.lines.get(sibling.id)
-				break
-			else:
-				cummulative_weight += sibling.weight
+    # Check for weighted random lines.
+    if data.has(&"siblings"):
+        # Only count siblings that pass their condition (if they have one).
+        var successful_siblings: Array = data.siblings.filter(func(sibling): return not sibling.has("condition") or await _check_condition(sibling, extra_game_states))
+        # If there are no siblings that pass their conditions then just skip over them all.
+        if successful_siblings.size() == 0:
+            return await get_line(resource, data.next_id + id_trail, extra_game_states)
+        # Otherwise, pick a random one.
+        var target_weight: float = randf_range(0, successful_siblings.reduce(func(total, sibling): return total + sibling.weight, 0))
+        var cummulative_weight: float = 0
+        for sibling in successful_siblings:
+            if target_weight < cummulative_weight + sibling.weight:
+                data = resource.lines.get(sibling.id)
+                break
+            else:
+                cummulative_weight += sibling.weight
 
-	# If this line is blank and it's the last line then check for returning snippets.
+    # If this line is blank and it's the last line then check for returning snippets.
 	if data.type in [DMConstants.TYPE_COMMENT, DMConstants.TYPE_UNKNOWN]:
 		if data.next_id in [DMConstants.ID_END, DMConstants.ID_NULL, null]:
 			if stack.size() > 0:
@@ -272,25 +272,25 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
 			resource = load("uid://" + bits[0])
 			next_id = bits[1]
 
-		# If the title isn't in this resource it might be back in the original one
-		if not resource.lines.has(next_id) and not resource.titles.has(next_id):
-			resource = previous_resource
+        # If the title isn't in this resource it might be back in the original one
+        if not resource.lines.has(next_id) and not resource.titles.has(next_id):
+            resource = previous_resource
 
-		return await get_line(resource, next_id + id_trail, extra_game_states)
+        return await get_line(resource, next_id + id_trail, extra_game_states)
 
-	elif data.type == DMConstants.TYPE_DIALOGUE:
-		if not data.has(&"id"):
-			data.id = key
+    elif data.type == DMConstants.TYPE_DIALOGUE:
+        if not data.has(&"id"):
+            data.id = key
 
-	# Set up a line object.
-	var line: DialogueLine = await create_dialogue_line(data, extra_game_states)
+    # Set up a line object.
+    var line: DialogueLine = await create_dialogue_line(data, extra_game_states)
 
-	# If the jump point somehow has no content then just end.
-	if not line: return null
+    # If the jump point somehow has no content then just end.
+    if not line: return null
 
-	# Find any simultaneously said lines.
-	if data.has(&"concurrent_lines"):
-		# If the list includes this line then it isn't the origin line so ignore it.
+    # Find any simultaneously said lines.
+    if data.has(&"concurrent_lines"):
+        # If the list includes this line then it isn't the origin line so ignore it.
 		if not data.concurrent_lines.has(data.id):
 			# Resolve IDs to their actual lines.
 			for line_id: String in data.concurrent_lines:
@@ -303,50 +303,52 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
 		line.set(&"responses", await _get_responses(data.get(&"responses", []), resource, id_trail, extra_game_states))
 		return line
 
-	# Inject the next node's responses if they have any.
-	if resource.lines.has(line.next_id):
-		var next_line: Dictionary = resource.lines.get(line.next_id)
+    # Inject the next node's responses if they have any.
+    if resource.lines.has(line.next_id):
+        var next_line: Dictionary = resource.lines.get(line.next_id)
 
-		# If the next line is an end and we have an ID trail then see if it points to responses
-		if next_line.next_id == DMConstants.ID_END and stack.size() > 0:
-			var return_to_resource = resource
-			var return_to_id: String = stack.front()
-			if "@" in return_to_id:
-				var bits: PackedStringArray = return_to_id.split("@")
-				if bits[0] != _get_resource_uid(resource):
-					return_to_resource = load("uid://" + bits[0])
-				return_to_id = bits[1]
-			next_line = return_to_resource.lines.get(return_to_id)
+        # If the next line is an end and we have an ID trail then see if it points to responses
+        var peeked_at_stack: bool = false
+        if next_line.next_id == DMConstants.ID_END and stack.size() > 0:
+            peeked_at_stack = true
+            var return_to_resource = resource
+            var return_to_id: String = stack.front()
+            if "@" in return_to_id:
+                var bits: PackedStringArray = return_to_id.split("@")
+                if bits[0] != _get_resource_uid(resource):
+                    return_to_resource = load("uid://" + bits[0])
+                return_to_id = bits[1]
+            next_line = return_to_resource.lines.get(return_to_id)
 
-		# If the response line is marked as a title then make sure to emit the passed_title signal.
-		if line.next_id in resource.titles.values():
-			passed_title.emit(resource.titles.find_key(line.next_id))
+        # If the response line is marked as a title then make sure to emit the passed_title signal.
+        if line.next_id in resource.titles.values():
+            passed_title.emit(resource.titles.find_key(line.next_id))
 
-		# If the responses come from a snippet then we need to come back here afterwards.
-		if next_line.type == DMConstants.TYPE_GOTO and next_line.is_snippet and not id_trail.begins_with("|" + _get_id_with_resource(resource, next_line.next_id_after)):
-			id_trail = "|" + _get_id_with_resource(resource, next_line.next_id_after) + id_trail
+        # If the responses come from a snippet then we need to come back here afterwards.
+        if not peeked_at_stack and next_line.type == DMConstants.TYPE_GOTO and next_line.is_snippet and not id_trail.begins_with("|" + _get_id_with_resource(resource, next_line.next_id_after)):
+            id_trail = "|" + _get_id_with_resource(resource, next_line.next_id_after) + id_trail
 
-		# If the next line is a title then check where it points to see if that is a set of responses.
-		while [DMConstants.TYPE_TITLE, DMConstants.TYPE_GOTO].has(next_line.type) and resource.lines.has(next_line.next_id):
-			next_line = resource.lines.get(next_line.next_id)
+        # If the next line is a title then check where it points to see if that is a set of responses.
+        while [DMConstants.TYPE_TITLE, DMConstants.TYPE_GOTO].has(next_line.type) and resource.lines.has(next_line.next_id):
+            next_line = resource.lines.get(next_line.next_id)
 
-		if next_line != null and next_line.type == DMConstants.TYPE_RESPONSE:
-			# Note: For some reason C# has occasional issues with using the responses property directly
-			# so instead we use set and get here.
-			line.set(&"responses", await _get_responses(next_line.get(&"responses", []), resource, id_trail, extra_game_states))
+        if next_line != null and next_line.type == DMConstants.TYPE_RESPONSE:
+            # Note: For some reason C# has occasional issues with using the responses property directly
+            # so instead we use set and get here.
+            line.set(&"responses", await _get_responses(next_line.get(&"responses", []), resource, id_trail, extra_game_states))
 
-	line.next_id = "|".join(stack) if line.next_id == DMConstants.ID_NULL else _get_id_with_resource(resource, line.next_id) + id_trail
-	return line
+    line.next_id = "|".join(stack) if line.next_id == DMConstants.ID_NULL else _get_id_with_resource(resource, line.next_id) + id_trail
+    return line
 
 
 ## Replace any variables, etc in the text.
 func get_resolved_line_data(data: Dictionary, extra_game_states: Array = []) -> DMResolvedLineData:
-	var text: String = translate(data)
+    var text: String = translate(data)
 
-	# Resolve variables
-	var text_replacements: Array[Dictionary] = data.get(&"text_replacements", [] as Array[Dictionary])
-	if text_replacements.size() == 0 and "{{" in text:
-		# This line is translated but has expressions that didn't exist in the base text.
+    # Resolve variables
+    var text_replacements: Array[Dictionary] = data.get(&"text_replacements", [] as Array[Dictionary])
+    if text_replacements.size() == 0 and "{{" in text:
+        # This line is translated but has expressions that didn't exist in the base text.
 		text_replacements = _expression_parser.extract_replacements(text, 0)
 
 	for replacement in text_replacements:
@@ -356,128 +358,149 @@ func get_resolved_line_data(data: Dictionary, extra_game_states: Array = []) -> 
 		var value = await _resolve(replacement.expression.duplicate(true), extra_game_states)
 		var index: int = text.find(replacement.value_in_text)
 		if index == -1:
-			# The replacement wasn't found but maybe the regular quotes have been replaced
-			# by special quotes while translating.
-			index = text.replace("“", "\"").replace("”", "\"").find(replacement.value_in_text)
-		if index > -1:
-			text = text.substr(0, index) + str(value) + text.substr(index + replacement.value_in_text.length())
+            # The replacement wasn't found but maybe the regular quotes have been replaced
+            # by special quotes while translating.
+            index = text.replace("“", "\"").replace("”", "\"").find(replacement.value_in_text)
+        if index > -1:
+            text = text.substr(0, index) + str(value) + text.substr(index + replacement.value_in_text.length())
 
-	var compilation: DMCompilation = DMCompilation.new()
+    var compilation: DMCompilation = DMCompilation.new()
 
-	# Resolve random groups
-	for found in compilation.regex.INLINE_RANDOM_REGEX.search_all(text):
-		var options = found.get_string(&"options").split(&"|")
-		text = text.replace(&"[[%s]]" % found.get_string(&"options"), options[randi_range(0, options.size() - 1)])
+    # Resolve random groups
+    for found in compilation.regex.INLINE_RANDOM_REGEX.search_all(text):
+        var options = found.get_string(&"options").split(&"|")
+        text = text.replace(&"[[%s]]" % found.get_string(&"options"), options[randi_range(0, options.size() - 1)])
 
-	# Do a pass on the markers to find any conditionals
-	var markers: DMResolvedLineData = DMResolvedLineData.new(text)
+    # Do a pass on the markers to find any conditionals
+    var markers: DMResolvedLineData = DMResolvedLineData.new(text)
 
-	# Resolve any conditionals and update marker positions as needed
-	if data.type in [DMConstants.TYPE_DIALOGUE, DMConstants.TYPE_RESPONSE]:
-		var resolved_text: String = markers.text
-		var conditionals: Array[RegExMatch] = compilation.regex.INLINE_CONDITIONALS_REGEX.search_all(resolved_text)
-		var replacements: Array = []
-		for conditional in conditionals:
-			var condition_raw: String = conditional.strings[conditional.names.condition]
-			var body: String = conditional.strings[conditional.names.body]
-			var body_else: String = ""
-			if &"[else]" in body:
-				var bits = body.split(&"[else]")
-				body = bits[0]
-				body_else = bits[1]
-			var condition: Dictionary = compilation.extract_condition("if " + condition_raw, false, 0)
-			# If the condition fails then use the else of ""
-			if not await _check_condition({ condition = condition }, extra_game_states):
-				body = body_else
-			replacements.append({
-				start = conditional.get_start(),
-				end = conditional.get_end(),
-				string = conditional.get_string(),
-				body = body
-			})
+    # Resolve any conditionals and update marker positions as needed
+    if data.type in [DMConstants.TYPE_DIALOGUE, DMConstants.TYPE_RESPONSE]:
+        var resolved_text: String = markers.text
+        var conditionals: Array[RegExMatch] = compilation.regex.INLINE_CONDITIONALS_REGEX.search_all(resolved_text)
+        var replacements: Array = []
+        for conditional in conditionals:
+            var condition_raw: String = conditional.strings[conditional.names.condition]
+            var body: String = conditional.strings[conditional.names.body]
+            var body_else: String = ""
+            if &"[else]" in body:
+                var bits = body.split(&"[else]")
+                body = bits[0]
+                body_else = bits[1]
+            var condition: Dictionary = compilation.extract_condition("if " + condition_raw, false, 0)
+            var condition_passed: bool = await _check_condition({ condition = condition }, extra_game_states)
+            # If the condition fails then use the else of ""
+            if not condition_passed:
+                body = body_else
+            replacements.append({
+                start = conditional.get_start(),
+                end = conditional.get_end(),
+                string = conditional.get_string(),
+                body = body,
+                condition_passed = condition_passed
+            })
 
-		for i in range(replacements.size() - 1, -1, -1):
-			var r: Dictionary = replacements[i]
-			resolved_text = resolved_text.substr(0, r.start) + r.body + resolved_text.substr(r.end, 9999)
-			# Move any other markers now that the text has changed
-			_shift_markers(markers, r.start, r.end - r.start - r.body.length())
+        for i in range(replacements.size() - 1, -1, -1):
+            var r: Dictionary = replacements[i]
+            resolved_text = resolved_text.substr(0, r.start) + r.body + resolved_text.substr(r.end, 9999)
+            # Move any other markers now that the text has changed
+            _shift_markers(markers, r.start, r.end, r.body.length(), r.condition_passed)
 
-		var image_tags: Array[RegExMatch] = compilation.regex.IMAGE_TAGS_REGEX.search_all(resolved_text)
-		for image_tag: RegExMatch in image_tags:
-			# The [img] and [/img] tags have already been accounted for so now we just need to
-			# adjust for the path length.
-			_shift_markers(markers, image_tag.get_start(), image_tag.get_string(image_tag.names.path).length())
+        var image_tags: Array[RegExMatch] = compilation.regex.IMAGE_TAGS_REGEX.search_all(resolved_text)
+        for image_tag: RegExMatch in image_tags:
+            # The [img] and [/img] tags have already been accounted for so now we just need to
+            # adjust for the path length.
+            var path_length: int = image_tag.get_string(image_tag.names.path).length()
+            _shift_markers(markers, image_tag.get_start(), image_tag.get_start() + path_length, 0)
 
-		markers.text = resolved_text
+        markers.text = resolved_text
 
-	return markers
+    return markers
 
 
-func _shift_markers(markers: DMResolvedLineData, if_after: int, by_offset: int) -> void:
-	for key in [&"speeds", &"time"]:
-		if markers.get(key) == null: continue
-		var marker = markers.get(key)
-		var next_marker: Dictionary = {}
-		for index in marker:
-			if index < if_after:
-				next_marker[index] = marker[index]
-			elif index > if_after:
-				next_marker[index - by_offset] = marker[index]
-		markers.set(key, next_marker)
-	var mutations: Array[Array] = markers.mutations
-	var next_mutations: Array[Array] = []
-	for mutation in mutations:
-		var index = mutation[0]
-		if index < if_after:
-			next_mutations.append(mutation)
-		elif index > if_after:
-			next_mutations.append([index - by_offset, mutation[1]])
-	markers.mutations = next_mutations
+func _shift_markers(markers: DMResolvedLineData, removed_start: int, removed_end: int, body_length: int, keep_inner: bool = true) -> void:
+    # Calculate the offset for markers after the removed range
+    var after_offset: int = removed_end - removed_start - body_length
+
+    for key in [&"speeds", &"time"]:
+        if markers.get(key) == null: continue
+        var marker = markers.get(key)
+        var next_marker: Dictionary = {}
+        for index in marker:
+            if index < removed_start:
+                next_marker[index] = marker[index]
+            elif index >= removed_end:
+                next_marker[index - after_offset] = marker[index]
+            elif keep_inner:
+                # Marker is inside the conditional range and should be kept
+                # Shift it to account for the [if] tag being removed
+                next_marker[removed_start] = marker[index]
+            else:
+                # marker is inside a failed conditional, remove it
+                continue
+        markers.set(key, next_marker)
+
+    var mutations: Array[Array] = markers.mutations
+    var next_mutations: Array[Array] = []
+    for mutation in mutations:
+        var index = mutation[0]
+        if index < removed_start:
+            next_mutations.append(mutation)
+        elif index >= removed_end:
+            next_mutations.append([index - after_offset, mutation[1]])
+        elif keep_inner:
+            # Mutation is inside the conditional range and should be kept
+            # Shift it to account for the [if] tag being removed
+            next_mutations.append([removed_start, mutation[1]])
+        else:
+            # mutation is inside a failed conditional, remove it
+            continue
+    markers.mutations = next_mutations
 
 
 ## Replace any variables, etc in the character name
 func get_resolved_character(data: Dictionary, extra_game_states: Array = []) -> String:
-	var character: String = data.get(&"character", "")
+    var character: String = data.get(&"character", "")
 
-	# Resolve variables
-	for replacement in data.get(&"character_replacements", []):
-		var value = await _resolve(replacement.expression.duplicate(true), extra_game_states)
-		var index: int = character.find(replacement.value_in_text)
-		if index > -1:
-			character = character.substr(0, index) + str(value) + character.substr(index + replacement.value_in_text.length())
+    # Resolve variables
+    for replacement in data.get(&"character_replacements", []):
+        var value = await _resolve(replacement.expression.duplicate(true), extra_game_states)
+        var index: int = character.find(replacement.value_in_text)
+        if index > -1:
+            character = character.substr(0, index) + str(value) + character.substr(index + replacement.value_in_text.length())
 
-	# Resolve random groups
-	var random_regex: RegEx = RegEx.new()
-	random_regex.compile("\\[\\[(?<options>.*?)\\]\\]")
-	for found in random_regex.search_all(character):
-		var options = found.get_string(&"options").split("|")
-		character = character.replace("[[%s]]" % found.get_string(&"options"), options[randi_range(0, options.size() - 1)])
+    # Resolve random groups
+    var random_regex: RegEx = RegEx.new()
+    random_regex.compile("\\[\\[(?<options>.*?)\\]\\]")
+    for found in random_regex.search_all(character):
+        var options = found.get_string(&"options").split("|")
+        character = character.replace("[[%s]]" % found.get_string(&"options"), options[randi_range(0, options.size() - 1)])
 
-	return character
+    return character
 
 
 ## Generate a dialogue resource on the fly from some text
 func create_resource_from_text(text: String) -> Resource:
-	var result: DMCompilerResult = DMCompiler.compile_string(text, "")
+    var result: DMCompilerResult = DMCompiler.compile_string(text, "")
 
-	if result.errors.size() > 0:
-		printerr(DMConstants.translate(&"runtime.errors").format({ count = result.errors.size() }))
-		for error in result.errors:
-			printerr(DMConstants.translate(&"runtime.error_detail").format({
-				line = error.line_number + 1,
-				message = DMConstants.get_error_message(error.error)
-			}))
-		assert(false, DMConstants.translate(&"runtime.errors_see_details").format({ count = result.errors.size() }))
+    if result.errors.size() > 0:
+        printerr(DMConstants.translate(&"runtime.errors").format({ count = result.errors.size() }))
+        for error in result.errors:
+            printerr(DMConstants.translate(&"runtime.error_detail").format({
+                line = error.line_number + 1,
+                message = DMConstants.get_error_message(error.error)
+            }))
+        assert(false, DMConstants.translate(&"runtime.errors_see_details").format({ count = result.errors.size() }))
 
-	var resource: DialogueResource = DialogueResource.new()
-	resource.using_states = result.using_states
-	resource.titles = result.titles
-	resource.first_title = result.first_title
-	resource.character_names = result.character_names
-	resource.lines = result.lines
-	resource.raw_text = text
+    var resource: DialogueResource = DialogueResource.new()
+    resource.using_states = result.using_states
+    resource.titles = result.titles
+    resource.first_title = result.first_title
+    resource.character_names = result.character_names
+    resource.lines = result.lines
+    resource.raw_text = text
 
-	return resource
+    return resource
 
 
 #region Balloon helpers
@@ -485,62 +508,62 @@ func create_resource_from_text(text: String) -> Resource:
 
 ## Show the example balloon
 func show_example_dialogue_balloon(resource: DialogueResource, title: String = "", extra_game_states: Array = []) -> CanvasLayer:
-	var balloon: Node = load(_get_example_balloon_path()).instantiate()
-	_start_balloon.call_deferred(balloon, resource, title, extra_game_states)
-	return balloon
+    var balloon: Node = load(_get_example_balloon_path()).instantiate()
+    _start_balloon.call_deferred(balloon, resource, title, extra_game_states)
+    return balloon
 
 
 ## Show the configured dialogue balloon
 func show_dialogue_balloon(resource: DialogueResource, title: String = "", extra_game_states: Array = []) -> Node:
-	var balloon_path: String = DMSettings.get_setting(DMSettings.BALLOON_PATH, _get_example_balloon_path())
-	if not ResourceLoader.exists(balloon_path):
-		balloon_path = _get_example_balloon_path()
-	return show_dialogue_balloon_scene(balloon_path, resource, title, extra_game_states)
+    var balloon_path: String = DMSettings.get_setting(DMSettings.BALLOON_PATH, _get_example_balloon_path())
+    if not ResourceLoader.exists(balloon_path):
+        balloon_path = _get_example_balloon_path()
+    return show_dialogue_balloon_scene(balloon_path, resource, title, extra_game_states)
 
 
 ## Show a given balloon scene
 func show_dialogue_balloon_scene(balloon_scene, resource: DialogueResource, title: String = "", extra_game_states: Array = []) -> Node:
-	if balloon_scene is String:
-		balloon_scene = load(balloon_scene)
-	if balloon_scene is PackedScene:
-		balloon_scene = balloon_scene.instantiate()
+    if balloon_scene is String:
+        balloon_scene = load(balloon_scene)
+    if balloon_scene is PackedScene:
+        balloon_scene = balloon_scene.instantiate()
 
-	var balloon: Node = balloon_scene
-	_start_balloon.call_deferred(balloon, resource, title, extra_game_states)
-	return balloon
+    var balloon: Node = balloon_scene
+    _start_balloon.call_deferred(balloon, resource, title, extra_game_states)
+    return balloon
 
 
 ## Resolve a static line ID to an actual line ID
 func static_id_to_line_id(resource: DialogueResource, static_id: String) -> String:
-	var ids = static_id_to_line_ids(resource, static_id)
-	if ids.size() == 0: return ""
-	return ids[0]
+    var ids = static_id_to_line_ids(resource, static_id)
+    if ids.size() == 0: return ""
+    return ids[0]
 
 
 ## Resolve a static line ID to any actual line IDs that match
 func static_id_to_line_ids(resource: DialogueResource, static_id: String) -> PackedStringArray:
-	return resource.lines.values().filter(func(l): return l.get(&"translation_key", "") == static_id).map(func(l): return l.id)
+    return resource.lines.values().filter(func(l): return l.get(&"translation_key", "") == static_id).map(func(l): return l.id)
 
 
 # Call "start" on the given balloon.
 func _start_balloon(balloon: Node, resource: DialogueResource, title: String, extra_game_states: Array) -> void:
-	get_current_scene.call().add_child(balloon)
+    dialogue_started.emit(resource)
 
-	if balloon.has_method(&"start"):
-		balloon.start(resource, title, extra_game_states)
-	elif balloon.has_method(&"Start"):
-		balloon.Start(resource, title, extra_game_states)
-	else:
-		assert(false, DMConstants.translate(&"runtime.dialogue_balloon_missing_start_method"))
+    get_current_scene.call().add_child(balloon)
 
-	dialogue_started.emit(resource)
+    if balloon.has_method(&"start"):
+        balloon.start(resource, title, extra_game_states)
+    elif balloon.has_method(&"Start"):
+        balloon.Start(resource, title, extra_game_states)
+    else:
+        assert(false, DMConstants.translate(&"runtime.dialogue_balloon_missing_start_method"))
 
 
 # Get the path to the example balloon
 func _get_example_balloon_path() -> String:
-	var is_small_window: bool = ProjectSettings.get_setting("display/window/size/viewport_width") < 400
-	var balloon_path: String = "/example_balloon/small_example_balloon.tscn" if is_small_window else "/example_balloon/example_balloon.tscn"
-	return get_script().resource_path.get_base_dir() + balloon_path
+    var is_small_window: bool = ProjectSettings.get_setting("display/window/size/viewport_width") < 400
+    var balloon_path: String = "/example_balloon/small_example_balloon.tscn" if is_small_window else "/example_balloon/example_balloon.tscn"
+    return get_script().resource_path.get_base_dir() + balloon_path
 
 
 #endregion
@@ -549,35 +572,35 @@ func _get_example_balloon_path() -> String:
 
 
 func _get_dotnet_dialogue_manager() -> RefCounted:
-	if not is_instance_valid(_dotnet_dialogue_manager):
-		_dotnet_dialogue_manager = load(get_script().resource_path.get_base_dir() + "/DialogueManager.cs").new()
-	return _dotnet_dialogue_manager
+    if not is_instance_valid(_dotnet_dialogue_manager):
+        _dotnet_dialogue_manager = load(get_script().resource_path.get_base_dir() + "/DialogueManager.cs").new()
+    return _dotnet_dialogue_manager
 
 
 func _bridge_get_next_dialogue_line(call_id: int, resource: DialogueResource, key: String, extra_game_states: Array = [], mutation_behaviour: int = DMConstants.MutationBehaviour.Wait) -> void:
-	# dotnet needs at least one await tick of the signal gets called too quickly
-	await Engine.get_main_loop().process_frame
-	var line = await _get_next_dialogue_line(resource, key, extra_game_states, mutation_behaviour)
-	bridge_get_next_dialogue_line_completed.emit(call_id, line)
-	if line == null:
-		# End the conversation
-		dialogue_ended.emit(resource)
+    # dotnet needs at least one await tick of the signal gets called too quickly
+    await Engine.get_main_loop().process_frame
+    var line = await _get_next_dialogue_line(resource, key, extra_game_states, mutation_behaviour)
+    bridge_get_next_dialogue_line_completed.emit(call_id, line)
+    if line == null:
+        # End the conversation
+        dialogue_ended.emit(resource)
 
 
 func _bridge_get_line(call_id: int, resource: DialogueResource, key: String, extra_game_states: Array = []) -> void:
-	# dotnet needs at least one await tick of the signal gets called too quickly
-	await Engine.get_main_loop().process_frame
-	var line = await get_line(resource, key, extra_game_states)
-	bridge_get_line_completed.emit(call_id, line)
+    # dotnet needs at least one await tick of the signal gets called too quickly
+    await Engine.get_main_loop().process_frame
+    var line = await get_line(resource, key, extra_game_states)
+    bridge_get_line_completed.emit(call_id, line)
 
 
 func _bridge_mutate(call_id: int, mutation: Dictionary, extra_game_states: Array, is_inline_mutation: bool = false) -> void:
-	await _mutate(mutation, extra_game_states, is_inline_mutation)
-	bridge_mutated.emit(call_id)
+    await _mutate(mutation, extra_game_states, is_inline_mutation)
+    bridge_mutated.emit(call_id)
 
 
 func _bridge_get_error_message(error: int) -> String:
-	return DMConstants.get_error_message(error)
+    return DMConstants.get_error_message(error)
 
 
 #endregion
@@ -587,152 +610,152 @@ func _bridge_get_error_message(error: int) -> String:
 
 # Show a message or crash with error
 func show_error_for_missing_state_value(message: String, will_show: bool = true) -> void:
-	if not will_show: return
+    if not will_show: return
 
-	if DMSettings.get_setting(DMSettings.IGNORE_MISSING_STATE_VALUES, false):
-		push_error(message)
-	elif will_show:
-		# If you're here then you're missing a method or property in your game state. The error
-		# message down in the debugger will give you some more information.
-		assert(false, message)
+    if DMSettings.get_setting(DMSettings.IGNORE_MISSING_STATE_VALUES, false):
+        push_error(message)
+    elif will_show:
+        # If you're here then you're missing a method or property in your game state. The error
+        # message down in the debugger will give you some more information.
+        assert(false, message)
 
 
 # Translate a string
 func translate(data: Dictionary) -> String:
-	if TranslationServer.get_loaded_locales().size() == 0 or translation_source == DMConstants.TranslationSource.None:
-		return data.text
+    if TranslationServer.get_loaded_locales().size() == 0 or translation_source == DMConstants.TranslationSource.None:
+        return data.text
 
-	var translation_key: String = data.get(&"translation_key", data.text)
+    var translation_key: String = data.get(&"translation_key", data.text)
 
-	if translation_key == "" or translation_key == data.text:
-		return tr(data.text)
-	else:
-		# Line IDs work slightly differently depending on whether the translation came from a
-		# CSV or a PO file. CSVs use the line ID (or the line itself) as the translatable string
-		# whereas POs use the ID as context and the line itself as the translatable string.
-		match translation_source:
-			DMConstants.TranslationSource.PO:
-				return tr(data.text, StringName(translation_key))
+    if translation_key == "" or translation_key == data.text:
+        return tr(data.text)
+    else:
+        # Line IDs work slightly differently depending on whether the translation came from a
+        # CSV or a PO file. CSVs use the line ID (or the line itself) as the translatable string
+        # whereas POs use the ID as context and the line itself as the translatable string.
+        match translation_source:
+            DMConstants.TranslationSource.PO:
+                return tr(data.text, StringName(translation_key))
 
-			DMConstants.TranslationSource.CSV:
-				return tr(translation_key)
+            DMConstants.TranslationSource.CSV:
+                return tr(translation_key)
 
-			DMConstants.TranslationSource.Guess:
-				var translation_files: Array = ProjectSettings.get_setting(&"internationalization/locale/translations")
-				if translation_files.filter(func(f: String): return f.get_extension() in [&"po", &"mo"]).size() > 0:
-					# Assume PO
-					return tr(data.text, StringName(translation_key))
-				else:
-					# Assume CSV
-					return tr(translation_key)
+            DMConstants.TranslationSource.Guess:
+                var translation_files: Array = ProjectSettings.get_setting(&"internationalization/locale/translations")
+                if translation_files.filter(func(f: String): return f.get_extension() in [&"po", &"mo"]).size() > 0:
+                    # Assume PO
+                    return tr(data.text, StringName(translation_key))
+                else:
+                    # Assume CSV
+                    return tr(translation_key)
 
-	return tr(translation_key)
+    return tr(translation_key)
 
 
 # Create a line of dialogue
 func create_dialogue_line(data: Dictionary, extra_game_states: Array) -> DialogueLine:
-	match data.type:
-		DMConstants.TYPE_DIALOGUE:
-			var resolved_data: DMResolvedLineData = await get_resolved_line_data(data, extra_game_states)
-			return DialogueLine.new({
-				id = data.get(&"id", ""),
-				type = DMConstants.TYPE_DIALOGUE,
-				next_id = data.next_id,
-				character = await get_resolved_character(data, extra_game_states),
-				character_replacements = data.get(&"character_replacements", [] as Array[Dictionary]),
-				text = resolved_data.text,
-				text_replacements = data.get(&"text_replacements", [] as Array[Dictionary]),
-				translation_key = data.get(&"translation_key", data.text),
-				speeds = resolved_data.speeds,
-				inline_mutations = resolved_data.mutations,
-				time = resolved_data.time,
-				tags = data.get(&"tags", []),
-				extra_game_states = extra_game_states
-			})
+    match data.type:
+        DMConstants.TYPE_DIALOGUE:
+            var resolved_data: DMResolvedLineData = await get_resolved_line_data(data, extra_game_states)
+            return DialogueLine.new({
+                id = data.get(&"id", ""),
+                type = DMConstants.TYPE_DIALOGUE,
+                next_id = data.next_id,
+                character = await get_resolved_character(data, extra_game_states),
+                character_replacements = data.get(&"character_replacements", [] as Array[Dictionary]),
+                text = resolved_data.text,
+                text_replacements = data.get(&"text_replacements", [] as Array[Dictionary]),
+                translation_key = data.get(&"translation_key", data.text),
+                speeds = resolved_data.speeds,
+                inline_mutations = resolved_data.mutations,
+                time = resolved_data.time,
+                tags = data.get(&"tags", []),
+                extra_game_states = extra_game_states
+            })
 
-		DMConstants.TYPE_RESPONSE:
-			return DialogueLine.new({
-				id = data.get(&"id", ""),
-				type = DMConstants.TYPE_RESPONSE,
-				next_id = data.next_id,
-				tags = data.get(&"tags", []),
-				extra_game_states = extra_game_states
-			})
+        DMConstants.TYPE_RESPONSE:
+            return DialogueLine.new({
+                id = data.get(&"id", ""),
+                type = DMConstants.TYPE_RESPONSE,
+                next_id = data.next_id,
+                tags = data.get(&"tags", []),
+                extra_game_states = extra_game_states
+            })
 
-		DMConstants.TYPE_MUTATION:
-			return DialogueLine.new({
-				id = data.get(&"id", ""),
-				type = DMConstants.TYPE_MUTATION,
-				next_id = data.next_id,
-				mutation = data.mutation,
-				extra_game_states = extra_game_states
-			})
+        DMConstants.TYPE_MUTATION:
+            return DialogueLine.new({
+                id = data.get(&"id", ""),
+                type = DMConstants.TYPE_MUTATION,
+                next_id = data.next_id,
+                mutation = data.mutation,
+                extra_game_states = extra_game_states
+            })
 
-	return null
+    return null
 
 
 # Create a response
 func create_response(data: Dictionary, extra_game_states: Array) -> DialogueResponse:
-	var resolved_data: DMResolvedLineData = await get_resolved_line_data(data, extra_game_states)
-	return DialogueResponse.new({
-		id = data.get(&"id", ""),
-		type = DMConstants.TYPE_RESPONSE,
-		next_id = data.next_id,
-		is_allowed = data.is_allowed,
-		condition_as_text = data.get(&"condition_as_text", ""),
-		character = await get_resolved_character(data, extra_game_states),
-		character_replacements = data.get(&"character_replacements", [] as Array[Dictionary]),
-		text = resolved_data.text,
-		text_replacements = data.get(&"text_replacements", [] as Array[Dictionary]),
-		tags = data.get(&"tags", []),
-		translation_key = data.get(&"translation_key", data.text),
-	})
+    var resolved_data: DMResolvedLineData = await get_resolved_line_data(data, extra_game_states)
+    return DialogueResponse.new({
+        id = data.get(&"id", ""),
+        type = DMConstants.TYPE_RESPONSE,
+        next_id = data.next_id,
+        is_allowed = data.is_allowed,
+        condition_as_text = data.get(&"condition_as_text", ""),
+        character = await get_resolved_character(data, extra_game_states),
+        character_replacements = data.get(&"character_replacements", [] as Array[Dictionary]),
+        text = resolved_data.text,
+        text_replacements = data.get(&"text_replacements", [] as Array[Dictionary]),
+        tags = data.get(&"tags", []),
+        translation_key = data.get(&"translation_key", data.text),
+    })
 
 
 # Get the current game states
 func _get_game_states(extra_game_states: Array) -> Array:
-	if not _has_loaded_autoloads:
-		_has_loaded_autoloads = true
-		# Add any autoloads to a generic state so we can refer to them by name
-		for child in Engine.get_main_loop().root.get_children():
-			# Ignore the dialogue manager
-			if child.name == &"DialogueManager": continue
-			# Ignore the current main scene
-			if Engine.get_main_loop().current_scene and child.name == Engine.get_main_loop().current_scene.name: continue
-			# Add the node to our known autoloads
-			_autoloads[child.name] = child
-		game_states = [_autoloads]
-		# Add any other state shortcuts from settings
-		for node_name in DMSettings.get_setting(DMSettings.STATE_AUTOLOAD_SHORTCUTS, ""):
-			var state: Node = Engine.get_main_loop().root.get_node_or_null(NodePath(node_name))
-			if state:
-				game_states.append(state)
+    if not _has_loaded_autoloads:
+        _has_loaded_autoloads = true
+        # Add any autoloads to a generic state so we can refer to them by name
+        for child in Engine.get_main_loop().root.get_children():
+            # Ignore the dialogue manager
+            if child.name == &"DialogueManager": continue
+            # Ignore the current main scene
+            if Engine.get_main_loop().current_scene and child.name == Engine.get_main_loop().current_scene.name: continue
+            # Add the node to our known autoloads
+            _autoloads[child.name] = child
+        game_states = [_autoloads]
+        # Add any other state shortcuts from settings
+        for node_name in DMSettings.get_setting(DMSettings.STATE_AUTOLOAD_SHORTCUTS, ""):
+            var state: Node = Engine.get_main_loop().root.get_node_or_null(NodePath(node_name))
+            if state:
+                game_states.append(state)
 
-	var current_scene: Node = get_current_scene.call()
-	var unique_states: Array = []
-	for state in extra_game_states + [current_scene] + game_states:
-		if state != null and not unique_states.has(state):
-			unique_states.append(state)
-	return unique_states
+    var current_scene: Node = get_current_scene.call()
+    var unique_states: Array = []
+    for state in extra_game_states + [current_scene] + game_states:
+        if state != null and not unique_states.has(state):
+            unique_states.append(state)
+    return unique_states
 
 
 # Check if a condition is met
 func _check_condition(data: Dictionary, extra_game_states: Array) -> bool:
-	var result: Variant = await _resolve_condition_value(data, extra_game_states)
-	if typeof(result) in [
-		TYPE_STRING, TYPE_STRING_NAME, \
-		TYPE_DICTIONARY, \
-		TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_COLOR_ARRAY, \
-		TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, \
-		TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, \
-		TYPE_PACKED_STRING_ARRAY, \
-		TYPE_PACKED_VECTOR2_ARRAY, TYPE_PACKED_VECTOR3_ARRAY, TYPE_PACKED_VECTOR4_ARRAY]:
-			return (result as String).is_empty()
+    var result: Variant = await _resolve_condition_value(data, extra_game_states)
+    if typeof(result) in [
+        TYPE_STRING, TYPE_STRING_NAME, \
+        TYPE_DICTIONARY, \
+        TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_COLOR_ARRAY, \
+        TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, \
+        TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, \
+        TYPE_PACKED_STRING_ARRAY, \
+        TYPE_PACKED_VECTOR2_ARRAY, TYPE_PACKED_VECTOR3_ARRAY, TYPE_PACKED_VECTOR4_ARRAY]:
+            return (result as String).is_empty()
 
-	if result is Node or result is Resource:
-		return is_instance_valid(result)
+    if result is Node or result is Resource:
+        return is_instance_valid(result)
 
-	return bool(result)
+    return bool(result)
 
 
 # Resolve a condition's expression value
@@ -805,7 +828,7 @@ func _mutate(mutation: Dictionary, extra_game_states: Array, is_inline_mutation:
 
 	# Or pass through to the resolver
 	else:
-		if not _mutation_contains_assignment(mutation.expression) and not is_inline_mutation:
+		if not _mutation_contains_assignment(mutation.expression):
 			mutated.emit(mutation.merged({ is_inline = is_inline_mutation }))
 
 		if mutation.get("is_blocking", true):
@@ -897,9 +920,9 @@ func _get_state_value(property: String, extra_game_states: Array):
 
 # Print warnings for top-level state name collisions.
 func _warn_about_state_name_collisions(target_key: String, extra_game_states: Array) -> void:
-	# Don't run the check if this is a release build
-	if not OS.is_debug_build(): return
-	# Also don't run if the setting is off
+    # Don't run the check if this is a release build
+    if not OS.is_debug_build(): return
+    # Also don't run if the setting is off
 	if not DMSettings.get_setting(DMSettings.WARN_ABOUT_METHOD_PROPERTY_OR_SIGNAL_NAME_CONFLICTS, false): return
 
 	# Get the list of state shortcuts.
@@ -1010,7 +1033,7 @@ func _resolve(tokens: Array, extra_game_states: Array):
 				var caller: Dictionary = tokens[i - 2]
 				if Builtins.is_supported(caller.value):
 					caller.type = DMConstants.TOKEN_VALUE
-					caller.value = Builtins.resolve_method(caller.value, function_name, args)
+					caller.value = await Builtins.resolve_method(caller.value, function_name, args)
 					tokens.remove_at(i)
 					tokens.remove_at(i - 1)
 					i -= 2
@@ -1224,12 +1247,12 @@ func _resolve(tokens: Array, extra_game_states: Array):
 					if Builtins.is_supported(caller.value):
 						caller.value = Builtins.resolve_property(caller.value, property)
 					else:
-						caller.value = caller.value.get(property)
+						caller.value = _resolve_thing_property(caller.value, property)
 				tokens.remove_at(i)
 				tokens.remove_at(i - 1)
 				i -= 2
 			elif tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-				# It's a normal variable but we will be assigning to it so don't resolve
+                # It's a normal variable but we will be assigning to it so don't resolve
 				# it until everything after it has been resolved
 				token.type = "variable"
 			else:
@@ -1532,7 +1555,7 @@ func _get_method_info_for(thing: Variant, method: String, args: Array) -> Dictio
 
 func _resolve_thing_method(thing, method: String, args: Array):
 	if Builtins.is_supported(thing):
-		var result = Builtins.resolve_method(thing, method, args)
+		var result = await Builtins.resolve_method(thing, method, args)
 		if not Builtins.has_resolve_method_failed():
 			return result
 
@@ -1565,17 +1588,34 @@ func _resolve_thing_method(thing, method: String, args: Array):
 
 		return await thing.callv(method, args)
 
-	# If we get here then it's probably a C# method with a Task return type
-	if thing is Script:
-		thing = thing.new()
-	var dotnet_dialogue_manager = _get_dotnet_dialogue_manager()
-	dotnet_dialogue_manager.ResolveThingMethod(thing, method, args)
-	return await dotnet_dialogue_manager.Resolved
+    # If we get here then it's probably a C# method with a Task return type
+    if thing is Script:
+        thing = thing.new()
+    var dotnet_dialogue_manager = _get_dotnet_dialogue_manager()
+    var id: float = randf()
+    dotnet_dialogue_manager.ResolveThingMethod(id, thing, method, args)
+    var x: int = 0
+    while x < 1000:
+        var result = await dotnet_dialogue_manager.Resolved
+        if result[0] == id:
+            return result[1]
+        x += 1
+
+
+func _resolve_thing_property(thing: Object, property: String) -> Variant:
+    if thing == null:
+        return false
+
+    if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
+        # If we get this far then the property might be a C# constant.
+        return _get_dotnet_dialogue_manager().ResolveThingConstant(thing, property)
+
+    return thing.get(property)
 
 
 func _get_resource_uid(resource: DialogueResource) -> String:
-	return ResourceUID.path_to_uid(resource.resource_path).replace("uid://", "")
+    return ResourceUID.id_to_text(ResourceLoader.get_resource_uid(resource.resource_path)).replace("uid://", "")
 
 
 func _get_id_with_resource(resource: DialogueResource, id: String) -> String:
-	return id if "@" in id else "%s@%s" % [_get_resource_uid(resource), id]
+    return id if "@" in id else "%s@%s" % [_get_resource_uid(resource), id]
