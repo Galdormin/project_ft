@@ -1,0 +1,72 @@
+@tool
+class_name Character
+extends Node2D
+
+@export var portrait: CharacterPortrait:
+    set(p_portrait):
+        if p_portrait != portrait:
+            portrait = p_portrait
+            _update_sprite()
+@export var emotion: CharacterPortrait.Emotion:
+    set(p_emotion):
+        if p_emotion != emotion:
+            emotion = p_emotion
+            _update_sprite()
+@export var orientation: CharacterPortrait.Orientaion:
+    set(p_orientation):
+        if p_orientation != orientation:
+            orientation = p_orientation
+            _update_sprite()
+@export var height: float = 300:
+    set(p_height):
+        if p_height != height:
+            height = p_height
+            _update_sprite()
+
+@onready var sprite: Sprite2D = %CharacterPortrait
+@onready var dialoge_balloon: Control = %DialogueBalloon
+@onready var dialogue_label: DialogueLabel = %DialogueLabel
+
+func _ready() -> void:
+    _update_sprite()
+    reset_dialogue_line()
+
+func _process(_delta: float) -> void:
+    pass
+
+func reset_dialogue_line() -> void:
+    dialoge_balloon.hide()
+
+func set_dialogue_line(dialogue_line: DialogueLine) -> void:
+    # Set Emotion
+    for tag in dialogue_line.tags:
+        if CharacterPortrait.is_emotion(tag):
+            emotion = CharacterPortrait.as_emotion(tag)
+            break
+    
+     # Set line
+    if dialogue_line:
+        dialoge_balloon.show()
+        dialogue_label.dialogue_line = dialogue_line
+        dialogue_label.type_out()
+    else:
+        reset_dialogue_line()
+
+func _update_sprite() -> void:
+    if not is_node_ready():
+        return
+    
+    if not portrait:
+        Loggie.warn("Try to _update_sprite with no CharacterPortrait.")
+        return
+    
+    if emotion in portrait.sprites:
+        sprite.texture = portrait.sprites[emotion]
+    
+    # Setup Scale
+    sprite.scale = Vector2.ONE * (height / sprite.texture.get_height())
+    position.y = - height / 2
+    
+    # Setup Orientation
+    if orientation != portrait.default_orientation:
+        sprite.scale.x *= -1

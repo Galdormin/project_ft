@@ -19,14 +19,16 @@ line_length=144
 config/name="Project FT"
 run/main_scene="uid://bbt0ovgbwjdvf"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://shared/assets/icon.svg"
+config/icon="res://assets/icon.svg"
 
 [autoload]
 
+Enums="*uid://5vm67vt2k0hq"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 Loggie="*res://addons/loggie/loggie.gd"
 SceneManager="*res://systems/managers/scene_manager.gd"
 BalloonManager="*res://systems/managers/balloon_manager.gd"
+CharacterManager="*uid://c8gmatil1bx01"
 
 [dialogue_manager]
 
@@ -52,10 +54,6 @@ Select={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(155, 15),"global_position":Vector2(164, 63),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
-
-[internationalization]
-
-locale/translations_pot_files=PackedStringArray("res://dialogue/intro/intro.dialogue", "res://dialogue/intro/entrance.dialogue")
 
 [rendering]
 

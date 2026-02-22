@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://cqqtc1t6yd5cc"]
+
+[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://scenes/character/character_portrait.gd" id="1_i5de2"]
+[ext_resource type="Texture2D" uid="uid://dew7pvdq4j080" path="res://assets/characters/hortense/hortense_happy.png" id="2_edpfr"]
+[ext_resource type="Texture2D" uid="uid://c8wmca5s7v7wa" path="res://assets/characters/hortense/hortense_angry.png" id="3_285kq"]
+[ext_resource type="Texture2D" uid="uid://r3adskqt2f3r" path="res://assets/characters/hortense/hortense_sad.png" id="4_73aia"]
+
+[resource]
+script = ExtResource("1_i5de2")
+name = "Hortense"
+sprites = Dictionary[int, Texture2D]({
+0: ExtResource("2_edpfr"),
+1: ExtResource("3_285kq"),
+2: ExtResource("4_73aia")
+})
+metadata/_custom_type_script = "uid://idtk4ps8bknq"

@@ -1,9 +1,9 @@
 ~ start
-Robin: Bonjour, je viens pour mon premier jour de taff.
-Hortense: Bonjour, vous devez faire erreur.
-- First one
-	Robin: Il me semble pas, vous avez accepté ma candidature la semaine dernière.
-- Second one
-	Robin: Ah mince, c'est pas la boutique d'Hortense ici ?
-Hortense: Ah vous êtes Robin ? Je vous imaginais pas du tout comme ça...
+do add_character("Robin", 0.25, LOOK_RIGHT, "Happy")
+do add_character("Hortense", 0.75, LOOK_LEFT, "Angry")
+
+Robin: [#Happy] Yo, je viens pour mon premier jour de taff.
+Hortense: [#Happy] Bonjour, vous devez faire erreur.
+Robin: J'pense pas, vous avez accepté ma candidature la semaine dernière.
+Hortense: [#Angry] Ah vous êtes Robin ? Je vous imaginais pas du tout comme ça...
 => END

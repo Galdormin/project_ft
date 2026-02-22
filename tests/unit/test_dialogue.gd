@@ -8,7 +8,7 @@ func get_all_dialogue() -> PackedStringArray:
 
 ## Test that all character names in dialogue exists and are well written
 func test_character_names():
-    var accepted_character := ["Narrateur", "Robin", "Hortense"]
+    var accepted_character := CharacterManager.all_characters() + ["Narrateur"]
     
     for dialogue_file in get_all_dialogue():
         var dialogue: DialogueResource = load(dialogue_file)

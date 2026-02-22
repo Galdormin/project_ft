@@ -1,12 +1,30 @@
 [gd_scene format=3 uid="uid://c8hbu8l8kncmo"]
 
+[ext_resource type="Script" uid="uid://y7h6mcnmf53y" path="res://scenes/shop/shop_main.gd" id="1_enpsq"]
 [ext_resource type="PackedScene" uid="uid://1sgeh4i2ocr0" path="res://scenes/shop/shop_entrance/shop_entrance.tscn" id="1_vxj7x"]
 [ext_resource type="PackedScene" uid="uid://dcb5tax3h7c1" path="res://scenes/dialogue/recap_balloon/recap_balloon.tscn" id="2_d32op"]
+[ext_resource type="Script" uid="uid://cbinyesaonc23" path="res://scenes/shop/dialogue_area.gd" id="4_7oxfv"]
+[ext_resource type="Resource" uid="uid://cyi4ctle3x0vf" path="res://dialogue/intro/entrance.dialogue" id="5_iltsb"]
+
+[sub_resource type="Curve2D" id="Curve2D_iltsb"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 300, 838, 0, 0, 0, 0, 1620, 838)
+}
+point_count = 2
 
 [node name="ShopMain" type="Node2D" unique_id=806536594]
+script = ExtResource("1_enpsq")
 
 [node name="ShopEntrance" parent="." unique_id=825147829 instance=ExtResource("1_vxj7x")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1284566562]
+visible = false
 
 [node name="RecapBalloon" parent="CanvasLayer" unique_id=449813091 instance=ExtResource("2_d32op")]
+
+[node name="DialogueArea" type="Node2D" parent="." unique_id=192671997]
+script = ExtResource("4_7oxfv")
+dialogue_resource = ExtResource("5_iltsb")
+
+[node name="PortraitPath" type="Path2D" parent="DialogueArea" unique_id=764703167]
+curve = SubResource("Curve2D_iltsb")

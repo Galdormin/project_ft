@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cci15qjboep3f"]
+
+[ext_resource type="Texture2D" uid="uid://dew7pvdq4j080" path="res://assets/characters/hortense/hortense_happy.png" id="1_6nn2t"]
+[ext_resource type="Script" uid="uid://co0xoiwcmyuhc" path="res://scenes/character/character.gd" id="2_cuyo6"]
+[ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="6_bix7t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ex5l"]
+bg_color = Color(0.2627451, 0.2627451, 0.2627451, 0.9411765)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.19434929, 0.19434926, 0.19434926, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="Theme" id="Theme_bblvu"]
+Panel/styles/panel = SubResource("StyleBoxFlat_7ex5l")
+
+[node name="Character" type="Node2D" unique_id=1465911786]
+script = ExtResource("2_cuyo6")
+height = 600.0
+
+[node name="CharacterPortrait" type="Sprite2D" parent="." unique_id=1168875597]
+unique_name_in_owner = true
+scale = Vector2(-0.402955, 0.402955)
+texture = ExtResource("1_6nn2t")
+
+[node name="DialogueBalloon" type="Control" parent="." unique_id=1769559521]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -239.5
+offset_right = 239.5
+offset_bottom = 132.0
+grow_horizontal = 2
+theme = SubResource("Theme_bblvu")
+
+[node name="Panel" type="Panel" parent="DialogueBalloon" unique_id=166121219]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="DialogueBalloon/Panel" unique_id=1543079581]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogueLabel" type="RichTextLabel" parent="DialogueBalloon/Panel/MarginContainer" unique_id=74283478]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Lorem Ipsum dolor es"
+script = ExtResource("6_bix7t")
+skip_pause_at_abbreviations = PackedStringArray("Mr", "Mrs", "Ms", "Dr", "etc", "eg", "ex")
+metadata/_custom_type_script = "uid://g32um0mltv5d"

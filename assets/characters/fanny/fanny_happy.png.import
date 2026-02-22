@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://belnqk1omvneu"
-path="res://.godot/imported/icon.svg-422b5c8181cf4068bd3cea41a2cf69ce.ctex"
+uid="uid://beq6dlqj34elm"
+path="res://.godot/imported/fanny_happy.png-f7cd71be4f0623f96693eb98b35e9852.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://shared/assets/icon.svg"
-dest_files=["res://.godot/imported/icon.svg-422b5c8181cf4068bd3cea41a2cf69ce.ctex"]
+source_file="res://assets/characters/fanny/fanny_happy.png"
+dest_files=["res://.godot/imported/fanny_happy.png-f7cd71be4f0623f96693eb98b35e9852.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

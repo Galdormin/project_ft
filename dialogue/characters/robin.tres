@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://cxnkthmgyrrap"]
+
+[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://scenes/character/character_portrait.gd" id="1_mewo4"]
+[ext_resource type="Texture2D" uid="uid://dw3m3y6gb1gt8" path="res://assets/characters/robin/robin_angry.png" id="2_nssau"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_x2ljx"]
+load_path = "res://.godot/imported/sprite3 happy.png-91fcef485354aa7ae799666096319f87.ctex"
+
+[resource]
+script = ExtResource("1_mewo4")
+name = "Robin"
+sprites = Dictionary[int, Texture2D]({
+0: SubResource("CompressedTexture2D_x2ljx"),
+1: ExtResource("2_nssau")
+})
+metadata/_custom_type_script = "uid://idtk4ps8bknq"
