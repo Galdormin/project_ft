@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://bqyxm8sgyxmhr"]
+
+[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://systems/types/character_portrait.gd" id="1_61e0s"]
+[ext_resource type="Texture2D" uid="uid://b18dtbrnpbx4d" path="res://assets/characters/marianne/marianne_happy.png" id="2_huinu"]
+[ext_resource type="Texture2D" uid="uid://6cqc8qm74ex2" path="res://assets/characters/marianne/marianne_neutral.png" id="2_p2iry"]
+[ext_resource type="Texture2D" uid="uid://vqpm7kpd4t1i" path="res://assets/characters/marianne/marianne_angry.png" id="3_p2iry"]
+[ext_resource type="Texture2D" uid="uid://d2hko71ppxssh" path="res://assets/characters/marianne/marianne_sad.png" id="4_e2row"]
+
+[resource]
+script = ExtResource("1_61e0s")
+name = "Marianne"
+sprites = Dictionary[int, Texture2D]({
+0: ExtResource("2_p2iry"),
+1: ExtResource("2_huinu"),
+2: ExtResource("3_p2iry"),
+3: ExtResource("4_e2row")
+})
+metadata/_custom_type_script = "uid://idtk4ps8bknq"

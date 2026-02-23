@@ -1,9 +1,10 @@
 ~ start
-do add_character("Robin", 0.25, LOOK_RIGHT, "Happy")
-do add_character("Hortense", 0.75, LOOK_LEFT, "Angry")
+do add_character("Robin", "Right", LOOK_LEFT, "Neutral")
+do add_character("Fanny", "Left", LOOK_RIGHT, "Angry")
 
-Robin: [#Happy] Yo, je viens pour mon premier jour de taff.
-Hortense: [#Happy] Bonjour, vous devez faire erreur.
-Robin: J'pense pas, vous avez accepté ma candidature la semaine dernière.
-Hortense: [#Angry] Ah vous êtes Robin ? Je vous imaginais pas du tout comme ça...
+Robin: [#mood=Neutral] Yo, je viens pour mon premier jour de taff.
+Fanny: [#mood=Happy] Bonjour, vous devez faire erreur.
+Robin: [#Other] J'pense pas, vous avez accepté ma candidature la semaine dernière.
+Fanny: [#mood=Angry] Ah vous êtes Robin ? Je vous imaginais pas du tout comme ça...
 => END
+

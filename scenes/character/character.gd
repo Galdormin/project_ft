@@ -7,10 +7,10 @@ extends Node2D
         if p_portrait != portrait:
             portrait = p_portrait
             _update_sprite()
-@export var emotion: CharacterPortrait.Emotion:
-    set(p_emotion):
-        if p_emotion != emotion:
-            emotion = p_emotion
+@export var mood: CharacterPortrait.Mood:
+    set(p_mood):
+        if p_mood != mood:
+            mood = p_mood
             _update_sprite()
 @export var orientation: CharacterPortrait.Orientaion:
     set(p_orientation):
@@ -40,8 +40,8 @@ func reset_dialogue_line() -> void:
 func set_dialogue_line(dialogue_line: DialogueLine) -> void:
     # Set Emotion
     for tag in dialogue_line.tags:
-        if CharacterPortrait.is_emotion(tag):
-            emotion = CharacterPortrait.as_emotion(tag)
+        if CharacterPortrait.is_mood(tag):
+            mood = CharacterPortrait.as_mood(tag)
             break
     
      # Set line
@@ -60,8 +60,8 @@ func _update_sprite() -> void:
         Loggie.warn("Try to _update_sprite with no CharacterPortrait.")
         return
     
-    if emotion in portrait.sprites:
-        sprite.texture = portrait.sprites[emotion]
+    if mood in portrait.sprites:
+        sprite.texture = portrait.sprites[mood]
     
     # Setup Scale
     sprite.scale = Vector2.ONE * (height / sprite.texture.get_height())

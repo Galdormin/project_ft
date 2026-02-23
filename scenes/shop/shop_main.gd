@@ -1,14 +1,17 @@
 extends Node2D
 
-const LOOK_LEFT: int = 0
-const LOOK_RIGHT: int = 1
+# Declare constants to be used in Dialogue
+const LOOK_LEFT: int = CharacterPortrait.Orientaion.LEFT
+const LOOK_RIGHT: int = CharacterPortrait.Orientaion.RIGHT
 
 const dialogue = preload("res://dialogue/intro/entrance.dialogue")
 
+@onready var dialogue_area: DialogueArea = $ShopEntrance.dialogue_area
+
 func _ready() -> void:
-    $DialogueArea.start(dialogue, "start", [])
+    dialogue_area.start(dialogue, "start", [])
 
 
-func add_character(character: String, pos: float, orientation: int, emotion: String) -> void:
-    var emotion_val = CharacterPortrait.as_emotion(emotion) 
-    $DialogueArea.add_character(character, pos, orientation, emotion_val)
+func add_character(character: String, pos: String, orientation: int, mood: String) -> void:
+    var mood_val = CharacterPortrait.as_mood(mood) 
+    dialogue_area.add_character(character, pos, orientation, mood_val)

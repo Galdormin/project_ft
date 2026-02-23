@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cci15qjboep3f"]
 
-[ext_resource type="Texture2D" uid="uid://dew7pvdq4j080" path="res://assets/characters/hortense/hortense_happy.png" id="1_6nn2t"]
 [ext_resource type="Script" uid="uid://co0xoiwcmyuhc" path="res://scenes/character/character.gd" id="2_cuyo6"]
+[ext_resource type="Texture2D" uid="uid://br0qiq2k0xjjs" path="res://assets/characters/robin/robin_happy.png" id="3_f8hpl"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="6_bix7t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ex5l"]
@@ -22,26 +22,30 @@ expand_margin_bottom = 10.0
 
 [sub_resource type="Theme" id="Theme_bblvu"]
 Panel/styles/panel = SubResource("StyleBoxFlat_7ex5l")
+RichTextLabel/font_sizes/normal_font_size = 28
 
 [node name="Character" type="Node2D" unique_id=1465911786]
+position = Vector2(0, -600)
 script = ExtResource("2_cuyo6")
-height = 600.0
+height = 1200.0
 
 [node name="CharacterPortrait" type="Sprite2D" parent="." unique_id=1168875597]
 unique_name_in_owner = true
-scale = Vector2(-0.402955, 0.402955)
-texture = ExtResource("1_6nn2t")
+scale = Vector2(0.2773925, 0.2773925)
+texture = ExtResource("3_f8hpl")
 
 [node name="DialogueBalloon" type="Control" parent="." unique_id=1769559521]
 unique_name_in_owner = true
 visible = false
+z_index = 10
 layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -239.5
-offset_right = 239.5
-offset_bottom = 132.0
+offset_top = -80.0
+offset_right = 256.0
+offset_bottom = 52.0
 grow_horizontal = 2
 theme = SubResource("Theme_bblvu")
 

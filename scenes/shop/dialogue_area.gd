@@ -1,10 +1,9 @@
+class_name DialogueArea
 extends Node2D
 
-enum Slot {LEFT, CENTER, RIGHT}
-
 @export var dialogue_resource: DialogueResource
+@export var slots: Dictionary[String, Marker2D]
 
-@onready var portrait_path: Path2D = $PortraitPath
 
 var _characters: Dictionary[String, Character] = {}
 var _talking_character: Character
@@ -27,7 +26,7 @@ func start(resource: DialogueResource, title: String, _extra_game_states: Array)
     _dialogue_line = await dialogue_resource.get_next_dialogue_line(title)
     show()
 
-func add_character(character_name: String, pos: float, orientation: CharacterPortrait.Orientaion, emotion: CharacterPortrait.Emotion) -> void:
+func add_character(character_name: String, pos: String, orientation: CharacterPortrait.Orientaion, mood: CharacterPortrait.Mood) -> void:
     Loggie.debug("Add character %s at position %d" % [character_name, pos])
     
     if character_name in _characters:
@@ -41,14 +40,16 @@ func add_character(character_name: String, pos: float, orientation: CharacterPor
         return
     
     character_node.orientation = orientation
-    character_node.emotion = emotion
+    character_node.mood = mood
     _characters[character_name] = character_node
     
     # Create PathFollow for position
-    var path_follow = PathFollow2D.new()
-    portrait_path.add_child(path_follow)
-    path_follow.progress_ratio = pos
-    path_follow.add_child(character_node)
+    if pos == "Left":
+        character_node.height = 1900
+    else:
+        character_node.height = 1400
+    
+    slots[pos].add_child(character_node)
 
 
 func _next(next_id: String) -> void:

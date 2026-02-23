@@ -1,16 +1,18 @@
 [gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://m3bk1rcjjdl"]
 
-[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://scenes/character/character_portrait.gd" id="1_hhnou"]
+[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://systems/types/character_portrait.gd" id="1_qlwn8"]
+[ext_resource type="Texture2D" uid="uid://p67w6mtvmxyg" path="res://assets/characters/fanny/fanny_neutral.png" id="2_bpnit"]
 [ext_resource type="Texture2D" uid="uid://bw536a804hmxk" path="res://assets/characters/fanny/fanny_angry.png" id="2_qlwn8"]
 [ext_resource type="Texture2D" uid="uid://beq6dlqj34elm" path="res://assets/characters/fanny/fanny_happy.png" id="3_bpnit"]
 [ext_resource type="Texture2D" uid="uid://bye8rihkajadh" path="res://assets/characters/fanny/fanny_sad.png" id="4_4mefb"]
 
 [resource]
-script = ExtResource("1_hhnou")
+script = ExtResource("1_qlwn8")
 name = "Fanny"
 sprites = Dictionary[int, Texture2D]({
-0: ExtResource("3_bpnit"),
-1: ExtResource("2_qlwn8"),
-2: ExtResource("4_4mefb")
+0: ExtResource("2_bpnit"),
+1: ExtResource("3_bpnit"),
+2: ExtResource("2_qlwn8"),
+3: ExtResource("4_4mefb")
 })
 metadata/_custom_type_script = "uid://idtk4ps8bknq"

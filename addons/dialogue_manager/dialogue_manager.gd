@@ -234,43 +234,43 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
                 cummulative_weight += sibling.weight
 
     # If this line is blank and it's the last line then check for returning snippets.
-	if data.type in [DMConstants.TYPE_COMMENT, DMConstants.TYPE_UNKNOWN]:
-		if data.next_id in [DMConstants.ID_END, DMConstants.ID_NULL, null]:
-			if stack.size() > 0:
-				return await get_line(resource, "|".join(stack), extra_game_states)
-			else:
-				return null
-		else:
-			return await get_line(resource, data.next_id + id_trail, extra_game_states)
+    if data.type in [DMConstants.TYPE_COMMENT, DMConstants.TYPE_UNKNOWN]:
+        if data.next_id in [DMConstants.ID_END, DMConstants.ID_NULL, null]:
+            if stack.size() > 0:
+                return await get_line(resource, "|".join(stack), extra_game_states)
+            else:
+                return null
+        else:
+            return await get_line(resource, data.next_id + id_trail, extra_game_states)
 
-	# If the line is a random block then go to the start of the block.
-	elif data.type == DMConstants.TYPE_RANDOM:
-		return await get_line(resource, data.next_id + id_trail, extra_game_states)
+    # If the line is a random block then go to the start of the block.
+    elif data.type == DMConstants.TYPE_RANDOM:
+        return await get_line(resource, data.next_id + id_trail, extra_game_states)
 
-	# Check conditions.
-	elif data.type in [DMConstants.TYPE_CONDITION, DMConstants.TYPE_WHILE]:
-		# "else" will have no actual condition.
-		if await _check_condition(data, extra_game_states):
-			return await get_line(resource, data.next_id + id_trail, extra_game_states)
-		elif data.has("next_sibling_id") and not data.next_sibling_id.is_empty():
-			return await get_line(resource, data.next_sibling_id + id_trail, extra_game_states)
-		else:
-			return await get_line(resource, data.next_id_after + id_trail, extra_game_states)
+    # Check conditions.
+    elif data.type in [DMConstants.TYPE_CONDITION, DMConstants.TYPE_WHILE]:
+        # "else" will have no actual condition.
+        if await _check_condition(data, extra_game_states):
+            return await get_line(resource, data.next_id + id_trail, extra_game_states)
+        elif data.has("next_sibling_id") and not data.next_sibling_id.is_empty():
+            return await get_line(resource, data.next_sibling_id + id_trail, extra_game_states)
+        else:
+            return await get_line(resource, data.next_id_after + id_trail, extra_game_states)
 
-	# Evaluate jumps.
-	elif data.type == DMConstants.TYPE_GOTO:
-		if data.is_snippet:
-			# Point the return address at this resource
-			var next_id_after: String = _get_id_with_resource(resource, data.next_id_after)
-			if not id_trail.begins_with("|" + next_id_after):
-				id_trail = "|" + next_id_after + id_trail
+    # Evaluate jumps.
+    elif data.type == DMConstants.TYPE_GOTO:
+        if data.is_snippet:
+            # Point the return address at this resource
+            var next_id_after: String = _get_id_with_resource(resource, data.next_id_after)
+            if not id_trail.begins_with("|" + next_id_after):
+                id_trail = "|" + next_id_after + id_trail
 
-		# If next_id has a UID reference then split it to find where to actually go next
-		var next_id: String = data.next_id
-		if "@" in next_id:
-			var bits: PackedStringArray = data.next_id.split("@")
-			resource = load("uid://" + bits[0])
-			next_id = bits[1]
+        # If next_id has a UID reference then split it to find where to actually go next
+        var next_id: String = data.next_id
+        if "@" in next_id:
+            var bits: PackedStringArray = data.next_id.split("@")
+            resource = load("uid://" + bits[0])
+            next_id = bits[1]
 
         # If the title isn't in this resource it might be back in the original one
         if not resource.lines.has(next_id) and not resource.titles.has(next_id):
@@ -291,17 +291,17 @@ func get_line(resource: DialogueResource, key: String, extra_game_states: Array)
     # Find any simultaneously said lines.
     if data.has(&"concurrent_lines"):
         # If the list includes this line then it isn't the origin line so ignore it.
-		if not data.concurrent_lines.has(data.id):
-			# Resolve IDs to their actual lines.
-			for line_id: String in data.concurrent_lines:
-				line.concurrent_lines.append(await get_line(resource, line_id, extra_game_states))
+        if not data.concurrent_lines.has(data.id):
+            # Resolve IDs to their actual lines.
+            for line_id: String in data.concurrent_lines:
+                line.concurrent_lines.append(await get_line(resource, line_id, extra_game_states))
 
-	# If we are the first of a list of responses then get the other ones.
-	if data.type == DMConstants.TYPE_RESPONSE:
-		# Note: For some reason C# has occasional issues with using the responses property directly
-		# so instead we use set and get here.
-		line.set(&"responses", await _get_responses(data.get(&"responses", []), resource, id_trail, extra_game_states))
-		return line
+    # If we are the first of a list of responses then get the other ones.
+    if data.type == DMConstants.TYPE_RESPONSE:
+        # Note: For some reason C# has occasional issues with using the responses property directly
+        # so instead we use set and get here.
+        line.set(&"responses", await _get_responses(data.get(&"responses", []), resource, id_trail, extra_game_states))
+        return line
 
     # Inject the next node's responses if they have any.
     if resource.lines.has(line.next_id):
@@ -349,15 +349,15 @@ func get_resolved_line_data(data: Dictionary, extra_game_states: Array = []) -> 
     var text_replacements: Array[Dictionary] = data.get(&"text_replacements", [] as Array[Dictionary])
     if text_replacements.size() == 0 and "{{" in text:
         # This line is translated but has expressions that didn't exist in the base text.
-		text_replacements = _expression_parser.extract_replacements(text, 0)
+        text_replacements = _expression_parser.extract_replacements(text, 0)
 
-	for replacement in text_replacements:
-		if replacement.has("error"):
-			assert(false, "%s \"%s\"" % [DMConstants.get_error_message(replacement.get("error")), text])
+    for replacement in text_replacements:
+        if replacement.has("error"):
+            assert(false, "%s \"%s\"" % [DMConstants.get_error_message(replacement.get("error")), text])
 
-		var value = await _resolve(replacement.expression.duplicate(true), extra_game_states)
-		var index: int = text.find(replacement.value_in_text)
-		if index == -1:
+        var value = await _resolve(replacement.expression.duplicate(true), extra_game_states)
+        var index: int = text.find(replacement.value_in_text)
+        if index == -1:
             # The replacement wasn't found but maybe the regular quotes have been replaced
             # by special quotes while translating.
             index = text.replace("“", "\"").replace("”", "\"").find(replacement.value_in_text)
@@ -760,162 +760,162 @@ func _check_condition(data: Dictionary, extra_game_states: Array) -> bool:
 
 # Resolve a condition's expression value
 func _resolve_condition_value(data: Dictionary, extra_game_states: Array) -> Variant:
-	if data.get(&"condition", null) == null: return true
-	if data.condition.is_empty(): return true
+    if data.get(&"condition", null) == null: return true
+    if data.condition.is_empty(): return true
 
-	return await _resolve(data.condition.expression.duplicate(true), extra_game_states)
+    return await _resolve(data.condition.expression.duplicate(true), extra_game_states)
 
 
 # Check if a match value matches a case value
 func _check_case_value(match_value: Variant, data: Dictionary, extra_game_states: Array) -> bool:
-	if data.get(&"condition", null) == null: return true
-	if data.condition.is_empty(): return true
+    if data.get(&"condition", null) == null: return true
+    if data.condition.is_empty(): return true
 
-	var expression: Array[Dictionary] = data.condition.expression.duplicate(true)
+    var expression: Array[Dictionary] = data.condition.expression.duplicate(true)
 
-	# Check for multiple values
-	var expressions_to_check: Array = []
-	var previous_comma_index: int = 0
-	for i in range(0, expression.size()):
-		if expression[i].type == DMConstants.TOKEN_COMMA:
-			expressions_to_check.append(expression.slice(previous_comma_index, i))
-			previous_comma_index = i + 1
-		elif i == expression.size() - 1:
-			expressions_to_check.append(expression.slice(previous_comma_index))
+    # Check for multiple values
+    var expressions_to_check: Array = []
+    var previous_comma_index: int = 0
+    for i in range(0, expression.size()):
+        if expression[i].type == DMConstants.TOKEN_COMMA:
+            expressions_to_check.append(expression.slice(previous_comma_index, i))
+            previous_comma_index = i + 1
+        elif i == expression.size() - 1:
+            expressions_to_check.append(expression.slice(previous_comma_index))
 
-	for expression_to_check in expressions_to_check:
-		# If the when is a comparison when insert the match value as the first value to compare to
-		var already_compared: bool = false
-		if expression_to_check[0].type == DMConstants.TOKEN_COMPARISON:
-			expression_to_check.insert(0, {
-				type = DMConstants.TOKEN_VALUE,
-				value = match_value
-			})
-			already_compared = true
+    for expression_to_check in expressions_to_check:
+        # If the when is a comparison when insert the match value as the first value to compare to
+        var already_compared: bool = false
+        if expression_to_check[0].type == DMConstants.TOKEN_COMPARISON:
+            expression_to_check.insert(0, {
+                type = DMConstants.TOKEN_VALUE,
+                value = match_value
+            })
+            already_compared = true
 
-		var resolved_value = await _resolve(expression_to_check, extra_game_states)
-		if already_compared:
-			if resolved_value:
-				return true
-		else:
-			if match_value == resolved_value:
-				return true
+        var resolved_value = await _resolve(expression_to_check, extra_game_states)
+        if already_compared:
+            if resolved_value:
+                return true
+        else:
+            if match_value == resolved_value:
+                return true
 
-	return false
+    return false
 
 
 
 # Make a change to game state or run a method
 func _mutate(mutation: Dictionary, extra_game_states: Array, is_inline_mutation: bool = false) -> void:
-	var expression: Array[Dictionary] = mutation.expression
+    var expression: Array[Dictionary] = mutation.expression
 
-	# Handle built in mutations
-	if expression[0].type == DMConstants.TOKEN_FUNCTION and expression[0].function in [&"wait", &"Wait", &"debug", &"Debug"]:
-		var args: Array = await _resolve_each(expression[0].value, extra_game_states)
-		match expression[0].function:
-			&"wait", &"Wait":
-				mutated.emit(mutation.merged({ is_inline = is_inline_mutation }))
-				if [TYPE_FLOAT, TYPE_INT].has(typeof(args[0])):
-					await Engine.get_main_loop().create_timer(float(args[0])).timeout
-				else:
-					var actions: PackedStringArray = PackedStringArray(args[0] if typeof(args[0]) == TYPE_ARRAY else [args[0]])
-					await _wait_for(actions)
-				return
+    # Handle built in mutations
+    if expression[0].type == DMConstants.TOKEN_FUNCTION and expression[0].function in [&"wait", &"Wait", &"debug", &"Debug"]:
+        var args: Array = await _resolve_each(expression[0].value, extra_game_states)
+        match expression[0].function:
+            &"wait", &"Wait":
+                mutated.emit(mutation.merged({ is_inline = is_inline_mutation }))
+                if [TYPE_FLOAT, TYPE_INT].has(typeof(args[0])):
+                    await Engine.get_main_loop().create_timer(float(args[0])).timeout
+                else:
+                    var actions: PackedStringArray = PackedStringArray(args[0] if typeof(args[0]) == TYPE_ARRAY else [args[0]])
+                    await _wait_for(actions)
+                return
 
-			&"debug", &"Debug":
-				prints("Debug:", args)
-				await Engine.get_main_loop().process_frame
+            &"debug", &"Debug":
+                prints("Debug:", args)
+                await Engine.get_main_loop().process_frame
 
-	# Or pass through to the resolver
-	else:
-		if not _mutation_contains_assignment(mutation.expression):
-			mutated.emit(mutation.merged({ is_inline = is_inline_mutation }))
+    # Or pass through to the resolver
+    else:
+        if not _mutation_contains_assignment(mutation.expression):
+            mutated.emit(mutation.merged({ is_inline = is_inline_mutation }))
 
-		if mutation.get("is_blocking", true):
-			await _resolve(mutation.expression.duplicate(true), extra_game_states)
-			return
-		else:
-			_resolve(mutation.expression.duplicate(true), extra_game_states)
+        if mutation.get("is_blocking", true):
+            await _resolve(mutation.expression.duplicate(true), extra_game_states)
+            return
+        else:
+            _resolve(mutation.expression.duplicate(true), extra_game_states)
 
-	# Wait one frame to give the dialogue handler a chance to yield
-	await Engine.get_main_loop().process_frame
+    # Wait one frame to give the dialogue handler a chance to yield
+    await Engine.get_main_loop().process_frame
 
 
 # Wait for a given action
 func _wait_for(actions: PackedStringArray) -> void:
-	var waiter = DMWaiter.new(actions)
-	add_child(waiter)
-	await waiter.waited
-	waiter.queue_free()
+    var waiter = DMWaiter.new(actions)
+    add_child(waiter)
+    await waiter.waited
+    waiter.queue_free()
 
 
 # Check if a mutation contains an assignment token.
 func _mutation_contains_assignment(mutation: Array) -> bool:
-	for token in mutation:
-		if token.type == DMConstants.TOKEN_ASSIGNMENT:
-			return true
-	return false
+    for token in mutation:
+        if token.type == DMConstants.TOKEN_ASSIGNMENT:
+            return true
+    return false
 
 
 # Replace an array of line IDs with their response prompts
 func _get_responses(ids: Array, resource: DialogueResource, id_trail: String, extra_game_states: Array) -> Array[DialogueResponse]:
-	var responses: Array[DialogueResponse] = []
-	for id in ids:
-		var data: Dictionary = resource.lines.get(id).duplicate(true)
-		data.is_allowed = await _check_condition(data, extra_game_states)
-		var response: DialogueResponse = await create_response(data, extra_game_states)
-		response.next_id = _get_id_with_resource(resource, response.next_id) + id_trail
-		responses.append(response)
+    var responses: Array[DialogueResponse] = []
+    for id in ids:
+        var data: Dictionary = resource.lines.get(id).duplicate(true)
+        data.is_allowed = await _check_condition(data, extra_game_states)
+        var response: DialogueResponse = await create_response(data, extra_game_states)
+        response.next_id = _get_id_with_resource(resource, response.next_id) + id_trail
+        responses.append(response)
 
-	return responses
+    return responses
 
 
 # Get a value on the current scene or game state
 func _get_state_value(property: String, extra_game_states: Array):
-	# Special case for static primitive calls
-	if property == "Color":
-		return Color()
-	elif property == "Vector2":
-		return Vector2.ZERO
-	elif property == "Vector3":
-		return Vector3.ZERO
-	elif property == "Vector4":
-		return Vector4.ZERO
-	elif property == "Quaternion":
-		return Quaternion()
+    # Special case for static primitive calls
+    if property == "Color":
+        return Color()
+    elif property == "Vector2":
+        return Vector2.ZERO
+    elif property == "Vector3":
+        return Vector3.ZERO
+    elif property == "Vector4":
+        return Vector4.ZERO
+    elif property == "Quaternion":
+        return Quaternion()
 
-	var expression = Expression.new()
-	if expression.parse(property) != OK:
-		assert(false, DMConstants.translate(&"runtime.invalid_expression").format({ expression = property, error = expression.get_error_text() }))
+    var expression = Expression.new()
+    if expression.parse(property) != OK:
+        assert(false, DMConstants.translate(&"runtime.invalid_expression").format({ expression = property, error = expression.get_error_text() }))
 
-	# Warn about possible name collisions
-	_warn_about_state_name_collisions(property, extra_game_states)
+    # Warn about possible name collisions
+    _warn_about_state_name_collisions(property, extra_game_states)
 
-	for state in _get_game_states(extra_game_states):
-		if typeof(state) == TYPE_DICTIONARY:
-			if state.has(property):
-				return state.get(property)
-		else:
-			# Try for a C# constant first
-			if state.get_script() \
-			and state.get_script().resource_path.ends_with(".cs") \
-			and _get_dotnet_dialogue_manager().ThingHasConstant(state, property):
-				return _get_dotnet_dialogue_manager().ResolveThingConstant(state, property)
+    for state in _get_game_states(extra_game_states):
+        if typeof(state) == TYPE_DICTIONARY:
+            if state.has(property):
+                return state.get(property)
+        else:
+            # Try for a C# constant first
+            if state.get_script() \
+            and state.get_script().resource_path.ends_with(".cs") \
+            and _get_dotnet_dialogue_manager().ThingHasConstant(state, property):
+                return _get_dotnet_dialogue_manager().ResolveThingConstant(state, property)
 
-			# Otherwise just let Godot try and resolve it.
-			var result = expression.execute([], state, false)
-			if not expression.has_execute_failed():
-				return result
+            # Otherwise just let Godot try and resolve it.
+            var result = expression.execute([], state, false)
+            if not expression.has_execute_failed():
+                return result
 
-	if include_singletons and Engine.has_singleton(property):
-		return Engine.get_singleton(property)
+    if include_singletons and Engine.has_singleton(property):
+        return Engine.get_singleton(property)
 
-	if include_classes:
-		for class_data in ProjectSettings.get_global_class_list():
-			if class_data.get(&"class") == property:
-				return load(class_data.path)
+    if include_classes:
+        for class_data in ProjectSettings.get_global_class_list():
+            if class_data.get(&"class") == property:
+                return load(class_data.path)
 
-	show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
+    show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
 
 
 # Print warnings for top-level state name collisions.
@@ -923,670 +923,670 @@ func _warn_about_state_name_collisions(target_key: String, extra_game_states: Ar
     # Don't run the check if this is a release build
     if not OS.is_debug_build(): return
     # Also don't run if the setting is off
-	if not DMSettings.get_setting(DMSettings.WARN_ABOUT_METHOD_PROPERTY_OR_SIGNAL_NAME_CONFLICTS, false): return
+    if not DMSettings.get_setting(DMSettings.WARN_ABOUT_METHOD_PROPERTY_OR_SIGNAL_NAME_CONFLICTS, false): return
 
-	# Get the list of state shortcuts.
-	var state_shortcuts: Array = []
-	for node_name in DMSettings.get_setting(DMSettings.STATE_AUTOLOAD_SHORTCUTS, ""):
-		var state: Node = Engine.get_main_loop().root.get_node_or_null(NodePath(node_name))
-		if state:
-			state_shortcuts.append(state)
+    # Get the list of state shortcuts.
+    var state_shortcuts: Array = []
+    for node_name in DMSettings.get_setting(DMSettings.STATE_AUTOLOAD_SHORTCUTS, ""):
+        var state: Node = Engine.get_main_loop().root.get_node_or_null(NodePath(node_name))
+        if state:
+            state_shortcuts.append(state)
 
-	# Check any top level names for a collision
-	var states_with_key: Array = []
-	for state in extra_game_states + [get_current_scene.call()] + state_shortcuts:
-		if state is Dictionary:
-			if state.keys().has(target_key):
-				states_with_key.append("Dictionary")
-		else:
-			var script: Script = (state as Object).get_script()
-			if script == null:
-				continue
+    # Check any top level names for a collision
+    var states_with_key: Array = []
+    for state in extra_game_states + [get_current_scene.call()] + state_shortcuts:
+        if state is Dictionary:
+            if state.keys().has(target_key):
+                states_with_key.append("Dictionary")
+        else:
+            var script: Script = (state as Object).get_script()
+            if script == null:
+                continue
 
-			for method in script.get_script_method_list():
-				if method.name == target_key and not states_with_key.has(state.name):
-					states_with_key.append(state.name)
-					break
+            for method in script.get_script_method_list():
+                if method.name == target_key and not states_with_key.has(state.name):
+                    states_with_key.append(state.name)
+                    break
 
-			for property in script.get_script_property_list():
-				if property.name == target_key and not states_with_key.has(state.name):
-					states_with_key.append(state.name)
-					break
+            for property in script.get_script_property_list():
+                if property.name == target_key and not states_with_key.has(state.name):
+                    states_with_key.append(state.name)
+                    break
 
-			for signal_info in script.get_script_signal_list():
-				if signal_info.name == target_key and not states_with_key.has(state.name):
-					states_with_key.append(state.name)
-					break
+            for signal_info in script.get_script_signal_list():
+                if signal_info.name == target_key and not states_with_key.has(state.name):
+                    states_with_key.append(state.name)
+                    break
 
-	if states_with_key.size() > 1:
-		push_warning(DMConstants.translate(&"runtime.top_level_states_share_name").format({ states = ", ".join(states_with_key), key = target_key }))
+    if states_with_key.size() > 1:
+        push_warning(DMConstants.translate(&"runtime.top_level_states_share_name").format({ states = ", ".join(states_with_key), key = target_key }))
 
 
 # Set a value on the current scene or game state
 func _set_state_value(property: String, value, extra_game_states: Array) -> void:
-	for state in _get_game_states(extra_game_states):
-		if typeof(state) == TYPE_DICTIONARY:
-			if state.has(property):
-				state[property] = value
-				return
-		elif _thing_has_property(state, property):
-			state.set(property, value)
-			return
+    for state in _get_game_states(extra_game_states):
+        if typeof(state) == TYPE_DICTIONARY:
+            if state.has(property):
+                state[property] = value
+                return
+        elif _thing_has_property(state, property):
+            state.set(property, value)
+            return
 
-	if property.to_snake_case() != property:
-		show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found_missing_export").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
-	else:
-		show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
+    if property.to_snake_case() != property:
+        show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found_missing_export").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
+    else:
+        show_error_for_missing_state_value(DMConstants.translate(&"runtime.property_not_found").format({ property = property, states = _get_state_shortcut_names(extra_game_states) }))
 
 
 # Get the list of state shortcut names
 func _get_state_shortcut_names(extra_game_states: Array) -> String:
-	var states = _get_game_states(extra_game_states)
-	states.erase(_autoloads)
-	return ", ".join(states.map(func(s): return "\"%s\"" % (s.name if "name" in s else s)))
+    var states = _get_game_states(extra_game_states)
+    states.erase(_autoloads)
+    return ", ".join(states.map(func(s): return "\"%s\"" % (s.name if "name" in s else s)))
 
 
 # Resolve an array of expressions.
 func _resolve_each(array: Array, extra_game_states: Array) -> Array:
-	var results: Array = []
-	for item in array:
-		if not item[0].type in [DMConstants.TOKEN_BRACE_CLOSE, DMConstants.TOKEN_BRACKET_CLOSE, DMConstants.TOKEN_PARENS_CLOSE]:
-			results.append(await _resolve(item.duplicate(true), extra_game_states))
-	return results
+    var results: Array = []
+    for item in array:
+        if not item[0].type in [DMConstants.TOKEN_BRACE_CLOSE, DMConstants.TOKEN_BRACKET_CLOSE, DMConstants.TOKEN_PARENS_CLOSE]:
+            results.append(await _resolve(item.duplicate(true), extra_game_states))
+    return results
 
 
 # Collapse any expressions
 func _resolve(tokens: Array, extra_game_states: Array):
-	var i: int = 0
-	var limit: int = 0
+    var i: int = 0
+    var limit: int = 0
 
-	# Handle groups first
-	for token in tokens:
-		if token.type == DMConstants.TOKEN_GROUP:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = await _resolve(token.value, extra_game_states)
+    # Handle groups first
+    for token in tokens:
+        if token.type == DMConstants.TOKEN_GROUP:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = await _resolve(token.value, extra_game_states)
 
-	# Then variables/methods
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
+    # Then variables/methods
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
 
-		if token.type == DMConstants.TOKEN_NULL_COALESCE:
-			var caller: Dictionary = tokens[i - 1]
-			if caller.value == null:
-				# If the caller is null then the method/property is also null
-				caller.type = DMConstants.TOKEN_VALUE
-				caller.value = null
-				tokens.remove_at(i + 1)
-				tokens.remove_at(i)
-			else:
-				token.type = DMConstants.TOKEN_DOT
+        if token.type == DMConstants.TOKEN_NULL_COALESCE:
+            var caller: Dictionary = tokens[i - 1]
+            if caller.value == null:
+                # If the caller is null then the method/property is also null
+                caller.type = DMConstants.TOKEN_VALUE
+                caller.value = null
+                tokens.remove_at(i + 1)
+                tokens.remove_at(i)
+            else:
+                token.type = DMConstants.TOKEN_DOT
 
-		elif token.type == DMConstants.TOKEN_FUNCTION:
-			var function_name: String = token.function
-			var args = await _resolve_each(token.value, extra_game_states)
-			if tokens[i - 1].type == DMConstants.TOKEN_DOT:
-				# If we are calling a deeper function then we need to collapse the
-				# value into the thing we are calling the function on
-				var caller: Dictionary = tokens[i - 2]
-				if Builtins.is_supported(caller.value):
-					caller.type = DMConstants.TOKEN_VALUE
-					caller.value = await Builtins.resolve_method(caller.value, function_name, args)
-					tokens.remove_at(i)
-					tokens.remove_at(i - 1)
-					i -= 2
-				elif _thing_has_method(caller.value, function_name, args):
-					caller.type = DMConstants.TOKEN_VALUE
-					caller.value = await _resolve_thing_method(caller.value, function_name, args)
-					tokens.remove_at(i)
-					tokens.remove_at(i - 1)
-					i -= 2
-				else:
-					show_error_for_missing_state_value(DMConstants.translate(&"runtime.method_not_callable").format({ method = function_name, object = str(caller.value) }))
-			else:
-				var found: bool = false
-				match function_name:
-					&"str":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = str(args[0])
-						found = true
-					&"Vector2":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector2(args[0], args[1])
-						found = true
-					&"Vector2i":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector2i(args[0], args[1])
-						found = true
-					&"Vector3":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector3(args[0], args[1], args[2])
-						found = true
-					&"Vector3i":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector3i(args[0], args[1], args[2])
-						found = true
-					&"Vector4":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector4(args[0], args[1], args[2], args[3])
-						found = true
-					&"Vector4i":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Vector4i(args[0], args[1], args[2], args[3])
-						found = true
-					&"Quaternion":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = Quaternion(args[0], args[1], args[2], args[3])
-						found = true
-					&"Callable":
-						token.type = DMConstants.TOKEN_VALUE
-						match args.size():
-							0:
-								token.value = Callable()
-							1:
-								token.value = Callable(args[0])
-							2:
-								token.value = Callable(args[0], args[1])
-						found = true
-					&"Color":
-						token.type = DMConstants.TOKEN_VALUE
-						match args.size():
-							0:
-								token.value = Color()
-							1:
-								token.value = Color(args[0])
-							2:
-								token.value = Color(args[0], args[1])
-							3:
-								token.value = Color(args[0], args[1], args[2])
-							4:
-								token.value = Color(args[0], args[1], args[2], args[3])
-						found = true
-					&"load", &"Load":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = load(args[0])
-						found = true
-					&"roll_dice", &"RollDice":
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = randi_range(1, args[0])
-						found = true
-					_:
-						# Check for top level name conflicts
-						_warn_about_state_name_collisions(function_name, extra_game_states)
+        elif token.type == DMConstants.TOKEN_FUNCTION:
+            var function_name: String = token.function
+            var args = await _resolve_each(token.value, extra_game_states)
+            if tokens[i - 1].type == DMConstants.TOKEN_DOT:
+                # If we are calling a deeper function then we need to collapse the
+                # value into the thing we are calling the function on
+                var caller: Dictionary = tokens[i - 2]
+                if Builtins.is_supported(caller.value):
+                    caller.type = DMConstants.TOKEN_VALUE
+                    caller.value = await Builtins.resolve_method(caller.value, function_name, args)
+                    tokens.remove_at(i)
+                    tokens.remove_at(i - 1)
+                    i -= 2
+                elif _thing_has_method(caller.value, function_name, args):
+                    caller.type = DMConstants.TOKEN_VALUE
+                    caller.value = await _resolve_thing_method(caller.value, function_name, args)
+                    tokens.remove_at(i)
+                    tokens.remove_at(i - 1)
+                    i -= 2
+                else:
+                    show_error_for_missing_state_value(DMConstants.translate(&"runtime.method_not_callable").format({ method = function_name, object = str(caller.value) }))
+            else:
+                var found: bool = false
+                match function_name:
+                    &"str":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = str(args[0])
+                        found = true
+                    &"Vector2":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector2(args[0], args[1])
+                        found = true
+                    &"Vector2i":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector2i(args[0], args[1])
+                        found = true
+                    &"Vector3":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector3(args[0], args[1], args[2])
+                        found = true
+                    &"Vector3i":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector3i(args[0], args[1], args[2])
+                        found = true
+                    &"Vector4":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector4(args[0], args[1], args[2], args[3])
+                        found = true
+                    &"Vector4i":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Vector4i(args[0], args[1], args[2], args[3])
+                        found = true
+                    &"Quaternion":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = Quaternion(args[0], args[1], args[2], args[3])
+                        found = true
+                    &"Callable":
+                        token.type = DMConstants.TOKEN_VALUE
+                        match args.size():
+                            0:
+                                token.value = Callable()
+                            1:
+                                token.value = Callable(args[0])
+                            2:
+                                token.value = Callable(args[0], args[1])
+                        found = true
+                    &"Color":
+                        token.type = DMConstants.TOKEN_VALUE
+                        match args.size():
+                            0:
+                                token.value = Color()
+                            1:
+                                token.value = Color(args[0])
+                            2:
+                                token.value = Color(args[0], args[1])
+                            3:
+                                token.value = Color(args[0], args[1], args[2])
+                            4:
+                                token.value = Color(args[0], args[1], args[2], args[3])
+                        found = true
+                    &"load", &"Load":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = load(args[0])
+                        found = true
+                    &"roll_dice", &"RollDice":
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = randi_range(1, args[0])
+                        found = true
+                    _:
+                        # Check for top level name conflicts
+                        _warn_about_state_name_collisions(function_name, extra_game_states)
 
-						for state in _get_game_states(extra_game_states):
-							if _thing_has_method(state, function_name, args):
-								token.type = DMConstants.TOKEN_VALUE
-								token.value = await _resolve_thing_method(state, function_name, args)
-								found = true
-								break
+                        for state in _get_game_states(extra_game_states):
+                            if _thing_has_method(state, function_name, args):
+                                token.type = DMConstants.TOKEN_VALUE
+                                token.value = await _resolve_thing_method(state, function_name, args)
+                                found = true
+                                break
 
-				show_error_for_missing_state_value(DMConstants.translate(&"runtime.method_not_found").format({
-					method = args[0] if function_name in ["call", "call_deferred"] else function_name,
-					states = _get_state_shortcut_names(extra_game_states)
-				}), not found)
+                show_error_for_missing_state_value(DMConstants.translate(&"runtime.method_not_found").format({
+                    method = args[0] if function_name in ["call", "call_deferred"] else function_name,
+                    states = _get_state_shortcut_names(extra_game_states)
+                }), not found)
 
-		elif token.type == DMConstants.TOKEN_DICTIONARY_REFERENCE:
-			var value
-			if i > 0 and tokens[i - 1].type == DMConstants.TOKEN_DOT:
-				# If we are deep referencing then we need to get the parent object.
-				# `parent.value` is the actual object and `token.variable` is the name of
-				# the property within it.
-				value = tokens[i - 2].value[token.variable]
-				# Clean up the previous tokens
-				token.erase("variable")
-				tokens.remove_at(i - 1)
-				tokens.remove_at(i - 2)
-				i -= 2
-			else:
-				# Otherwise we can just get this variable as a normal state reference
-				value = _get_state_value(token.variable, extra_game_states)
+        elif token.type == DMConstants.TOKEN_DICTIONARY_REFERENCE:
+            var value
+            if i > 0 and tokens[i - 1].type == DMConstants.TOKEN_DOT:
+                # If we are deep referencing then we need to get the parent object.
+                # `parent.value` is the actual object and `token.variable` is the name of
+                # the property within it.
+                value = tokens[i - 2].value[token.variable]
+                # Clean up the previous tokens
+                token.erase("variable")
+                tokens.remove_at(i - 1)
+                tokens.remove_at(i - 2)
+                i -= 2
+            else:
+                # Otherwise we can just get this variable as a normal state reference
+                value = _get_state_value(token.variable, extra_game_states)
 
-			var index = await _resolve(token.value, extra_game_states)
-			if typeof(value) == TYPE_DICTIONARY:
-				if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-					# If the next token is an assignment then we need to leave this as a reference
-					# so that it can be resolved once everything ahead of it has been resolved
-					token.type = "dictionary"
-					token.value = value
-					token.key = index
-				else:
-					if value.has(index):
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = value[index]
-					else:
-						show_error_for_missing_state_value(DMConstants.translate(&"runtime.key_not_found").format({ key = str(index), dictionary = token.variable }))
-			elif typeof(value) in [TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_COLOR_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY]:
-				if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-					# If the next token is an assignment then we need to leave this as a reference
-					# so that it can be resolved once everything ahead of it has been resolved
-					token.type = "array"
-					token.value = value
-					token.key = index
-				else:
-					if index >= 0 and index < value.size():
-						token.type = DMConstants.TOKEN_VALUE
-						token.value = value[index]
-					else:
-						show_error_for_missing_state_value(DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = index, array = token.variable }))
+            var index = await _resolve(token.value, extra_game_states)
+            if typeof(value) == TYPE_DICTIONARY:
+                if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+                    # If the next token is an assignment then we need to leave this as a reference
+                    # so that it can be resolved once everything ahead of it has been resolved
+                    token.type = "dictionary"
+                    token.value = value
+                    token.key = index
+                else:
+                    if value.has(index):
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = value[index]
+                    else:
+                        show_error_for_missing_state_value(DMConstants.translate(&"runtime.key_not_found").format({ key = str(index), dictionary = token.variable }))
+            elif typeof(value) in [TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_COLOR_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY]:
+                if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+                    # If the next token is an assignment then we need to leave this as a reference
+                    # so that it can be resolved once everything ahead of it has been resolved
+                    token.type = "array"
+                    token.value = value
+                    token.key = index
+                else:
+                    if index >= 0 and index < value.size():
+                        token.type = DMConstants.TOKEN_VALUE
+                        token.value = value[index]
+                    else:
+                        show_error_for_missing_state_value(DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = index, array = token.variable }))
 
-		elif token.type == DMConstants.TOKEN_DICTIONARY_NESTED_REFERENCE:
-			var dictionary: Dictionary = tokens[i - 1]
-			var index = await _resolve(token.value, extra_game_states)
-			var value = dictionary.value
-			if typeof(value) == TYPE_DICTIONARY:
-				if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-					# If the next token is an assignment then we need to leave this as a reference
-					# so that it can be resolved once everything ahead of it has been resolved
-					dictionary.type = "dictionary"
-					dictionary.key = index
-					dictionary.value = value
-					tokens.remove_at(i)
-					i -= 1
-				else:
-					if dictionary.value.has(index):
-						dictionary.value = value.get(index)
-						tokens.remove_at(i)
-						i -= 1
-					else:
-						show_error_for_missing_state_value(DMConstants.translate(&"runtime.key_not_found").format({ key = str(index), dictionary = value }))
-			elif typeof(value) == TYPE_ARRAY:
-				if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-					# If the next token is an assignment then we need to leave this as a reference
-					# so that it can be resolved once everything ahead of it has been resolved
-					dictionary.type = "array"
-					dictionary.value = value
-					dictionary.key = index
-					tokens.remove_at(i)
-					i -= 1
-				else:
-					if index >= 0 and index < value.size():
-						dictionary.value = value[index]
-						tokens.remove_at(i)
-						i -= 1
-					else:
-						show_error_for_missing_state_value(DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = index, array = value }))
+        elif token.type == DMConstants.TOKEN_DICTIONARY_NESTED_REFERENCE:
+            var dictionary: Dictionary = tokens[i - 1]
+            var index = await _resolve(token.value, extra_game_states)
+            var value = dictionary.value
+            if typeof(value) == TYPE_DICTIONARY:
+                if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+                    # If the next token is an assignment then we need to leave this as a reference
+                    # so that it can be resolved once everything ahead of it has been resolved
+                    dictionary.type = "dictionary"
+                    dictionary.key = index
+                    dictionary.value = value
+                    tokens.remove_at(i)
+                    i -= 1
+                else:
+                    if dictionary.value.has(index):
+                        dictionary.value = value.get(index)
+                        tokens.remove_at(i)
+                        i -= 1
+                    else:
+                        show_error_for_missing_state_value(DMConstants.translate(&"runtime.key_not_found").format({ key = str(index), dictionary = value }))
+            elif typeof(value) == TYPE_ARRAY:
+                if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+                    # If the next token is an assignment then we need to leave this as a reference
+                    # so that it can be resolved once everything ahead of it has been resolved
+                    dictionary.type = "array"
+                    dictionary.value = value
+                    dictionary.key = index
+                    tokens.remove_at(i)
+                    i -= 1
+                else:
+                    if index >= 0 and index < value.size():
+                        dictionary.value = value[index]
+                        tokens.remove_at(i)
+                        i -= 1
+                    else:
+                        show_error_for_missing_state_value(DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = index, array = value }))
 
-		elif token.type == DMConstants.TOKEN_ARRAY:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = await _resolve_each(token.value, extra_game_states)
+        elif token.type == DMConstants.TOKEN_ARRAY:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = await _resolve_each(token.value, extra_game_states)
 
-		elif token.type == DMConstants.TOKEN_DICTIONARY:
-			token.type = DMConstants.TOKEN_VALUE
-			var dictionary = {}
-			for key in token.value.keys():
-				var resolved_key = await _resolve([key], extra_game_states)
-				var preresolved_value = token.value.get(key)
-				if typeof(preresolved_value) != TYPE_ARRAY:
-					preresolved_value = [preresolved_value]
-				var resolved_value = await _resolve(preresolved_value, extra_game_states)
-				dictionary[resolved_key] = resolved_value
-			token.value = dictionary
+        elif token.type == DMConstants.TOKEN_DICTIONARY:
+            token.type = DMConstants.TOKEN_VALUE
+            var dictionary = {}
+            for key in token.value.keys():
+                var resolved_key = await _resolve([key], extra_game_states)
+                var preresolved_value = token.value.get(key)
+                if typeof(preresolved_value) != TYPE_ARRAY:
+                    preresolved_value = [preresolved_value]
+                var resolved_value = await _resolve(preresolved_value, extra_game_states)
+                dictionary[resolved_key] = resolved_value
+            token.value = dictionary
 
-		elif token.type == DMConstants.TOKEN_VARIABLE or token.type == DMConstants.TOKEN_NUMBER:
-			if str(token.value) == "null":
-				token.type = DMConstants.TOKEN_VALUE
-				token.value = null
-			elif str(token.value) == "self":
-				token.type = DMConstants.TOKEN_VALUE
-				token.value = extra_game_states[0].self
-			elif tokens[i - 1].type == DMConstants.TOKEN_DOT:
-				var caller: Dictionary = tokens[i - 2]
-				var property = token.value
-				if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
-					# If the next token is an assignment then we need to leave this as a reference
-					# so that it can be resolved once everything ahead of it has been resolved
-					caller.type = "property"
-					caller.property = property
-				else:
-					# If we are requesting a deeper property then we need to collapse the
-					# value into the thing we are referencing from
-					caller.type = DMConstants.TOKEN_VALUE
-					if Builtins.is_supported(caller.value):
-						caller.value = Builtins.resolve_property(caller.value, property)
-					else:
-						caller.value = _resolve_thing_property(caller.value, property)
-				tokens.remove_at(i)
-				tokens.remove_at(i - 1)
-				i -= 2
-			elif tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+        elif token.type == DMConstants.TOKEN_VARIABLE or token.type == DMConstants.TOKEN_NUMBER:
+            if str(token.value) == "null":
+                token.type = DMConstants.TOKEN_VALUE
+                token.value = null
+            elif str(token.value) == "self":
+                token.type = DMConstants.TOKEN_VALUE
+                token.value = extra_game_states[0].self
+            elif tokens[i - 1].type == DMConstants.TOKEN_DOT:
+                var caller: Dictionary = tokens[i - 2]
+                var property = token.value
+                if tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
+                    # If the next token is an assignment then we need to leave this as a reference
+                    # so that it can be resolved once everything ahead of it has been resolved
+                    caller.type = "property"
+                    caller.property = property
+                else:
+                    # If we are requesting a deeper property then we need to collapse the
+                    # value into the thing we are referencing from
+                    caller.type = DMConstants.TOKEN_VALUE
+                    if Builtins.is_supported(caller.value):
+                        caller.value = Builtins.resolve_property(caller.value, property)
+                    else:
+                        caller.value = _resolve_thing_property(caller.value, property)
+                tokens.remove_at(i)
+                tokens.remove_at(i - 1)
+                i -= 2
+            elif tokens.size() > i + 1 and tokens[i + 1].type == DMConstants.TOKEN_ASSIGNMENT:
                 # It's a normal variable but we will be assigning to it so don't resolve
-				# it until everything after it has been resolved
-				token.type = "variable"
-			else:
-				if token.type == DMConstants.TOKEN_NUMBER:
-					token.type = DMConstants.TOKEN_VALUE
-					token.value = token.value
-				else:
-					token.type = DMConstants.TOKEN_VALUE
-					token.value = _get_state_value(str(token.value), extra_game_states)
+                # it until everything after it has been resolved
+                token.type = "variable"
+            else:
+                if token.type == DMConstants.TOKEN_NUMBER:
+                    token.type = DMConstants.TOKEN_VALUE
+                    token.value = token.value
+                else:
+                    token.type = DMConstants.TOKEN_VALUE
+                    token.value = _get_state_value(str(token.value), extra_game_states)
 
-		i += 1
+        i += 1
 
-	# Then multiply and divide
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_OPERATOR and token.value in ["*", "/", "%"]:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
-			tokens.remove_at(i + 1)
-			tokens.remove_at(i - 1)
-			i -= 1
-		i += 1
+    # Then multiply and divide
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_OPERATOR and token.value in ["*", "/", "%"]:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
+            tokens.remove_at(i + 1)
+            tokens.remove_at(i - 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	# Then addition and subtraction
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_OPERATOR and token.value in ["+", "-"]:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
-			tokens.remove_at(i + 1)
-			tokens.remove_at(i - 1)
-			i -= 1
-		i += 1
+    # Then addition and subtraction
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_OPERATOR and token.value in ["+", "-"]:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
+            tokens.remove_at(i + 1)
+            tokens.remove_at(i - 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	# Then negations
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_NOT:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = not tokens[i + 1].value
-			tokens.remove_at(i + 1)
-			i -= 1
-		i += 1
+    # Then negations
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_NOT:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = not tokens[i + 1].value
+            tokens.remove_at(i + 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	# Then comparisons
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_COMPARISON:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = _compare(token.value, tokens[i - 1].value, tokens[i + 1].value)
-			tokens.remove_at(i + 1)
-			tokens.remove_at(i - 1)
-			i -= 1
-		i += 1
+    # Then comparisons
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_COMPARISON:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = _compare(token.value, tokens[i - 1].value, tokens[i + 1].value)
+            tokens.remove_at(i + 1)
+            tokens.remove_at(i - 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	# Then and/or
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_AND_OR:
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
-			tokens.remove_at(i + 1)
-			tokens.remove_at(i - 1)
-			i -= 1
-		i += 1
+    # Then and/or
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_AND_OR:
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = _apply_operation(token.value, tokens[i - 1].value, tokens[i + 1].value)
+            tokens.remove_at(i + 1)
+            tokens.remove_at(i - 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	# Lastly, resolve any assignments
-	i = 0
-	limit = 0
-	while i < tokens.size() and limit < 1000:
-		limit += 1
-		var token: Dictionary = tokens[i]
-		if token.type == DMConstants.TOKEN_ASSIGNMENT:
-			var lhs: Dictionary = tokens[i - 1]
-			var value
+    # Lastly, resolve any assignments
+    i = 0
+    limit = 0
+    while i < tokens.size() and limit < 1000:
+        limit += 1
+        var token: Dictionary = tokens[i]
+        if token.type == DMConstants.TOKEN_ASSIGNMENT:
+            var lhs: Dictionary = tokens[i - 1]
+            var value
 
-			match lhs.type:
-				&"variable":
-					value = _apply_operation(token.value, _get_state_value(lhs.value, extra_game_states), tokens[i + 1].value)
-					_set_state_value(lhs.value, value, extra_game_states)
-				&"property":
-					value = _apply_operation(token.value, lhs.value.get(lhs.property), tokens[i + 1].value)
-					if typeof(lhs.value) == TYPE_DICTIONARY:
-						lhs.value[lhs.property] = value
-					else:
-						lhs.value.set(lhs.property, value)
-				&"dictionary":
-					value = _apply_operation(token.value, lhs.value.get(lhs.key, null), tokens[i + 1].value)
-					lhs.value[lhs.key] = value
-				&"array":
-					show_error_for_missing_state_value(
-						DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = lhs.key, array = lhs.value }),
-						lhs.key >= lhs.value.size()
-					)
-					value = _apply_operation(token.value, lhs.value[lhs.key], tokens[i + 1].value)
-					lhs.value[lhs.key] = value
-				_:
-					show_error_for_missing_state_value(DMConstants.translate(&"runtime.left_hand_size_cannot_be_assigned_to"))
+            match lhs.type:
+                &"variable":
+                    value = _apply_operation(token.value, _get_state_value(lhs.value, extra_game_states), tokens[i + 1].value)
+                    _set_state_value(lhs.value, value, extra_game_states)
+                &"property":
+                    value = _apply_operation(token.value, lhs.value.get(lhs.property), tokens[i + 1].value)
+                    if typeof(lhs.value) == TYPE_DICTIONARY:
+                        lhs.value[lhs.property] = value
+                    else:
+                        lhs.value.set(lhs.property, value)
+                &"dictionary":
+                    value = _apply_operation(token.value, lhs.value.get(lhs.key, null), tokens[i + 1].value)
+                    lhs.value[lhs.key] = value
+                &"array":
+                    show_error_for_missing_state_value(
+                        DMConstants.translate(&"runtime.array_index_out_of_bounds").format({ index = lhs.key, array = lhs.value }),
+                        lhs.key >= lhs.value.size()
+                    )
+                    value = _apply_operation(token.value, lhs.value[lhs.key], tokens[i + 1].value)
+                    lhs.value[lhs.key] = value
+                _:
+                    show_error_for_missing_state_value(DMConstants.translate(&"runtime.left_hand_size_cannot_be_assigned_to"))
 
-			token.type = DMConstants.TOKEN_VALUE
-			token.value = value
-			tokens.remove_at(i + 1)
-			tokens.remove_at(i - 1)
-			i -= 1
-		i += 1
+            token.type = DMConstants.TOKEN_VALUE
+            token.value = value
+            tokens.remove_at(i + 1)
+            tokens.remove_at(i - 1)
+            i -= 1
+        i += 1
 
-	if limit >= 1000:
-		assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
+    if limit >= 1000:
+        assert(false, DMConstants.translate(&"runtime.something_went_wrong"))
 
-	return tokens[0].value
+    return tokens[0].value
 
 
 # Compare two values.
 func _compare(operator: String, first_value, second_value) -> bool:
-	match operator:
-		&"in":
-			if first_value == null or second_value == null:
-				return false
-			else:
-				return first_value in second_value
-		&"<":
-			if first_value == null:
-				return true
-			elif second_value == null:
-				return false
-			else:
-				return first_value < second_value
-		&">":
-			if first_value == null:
-				return false
-			elif second_value == null:
-				return true
-			else:
-				return first_value > second_value
-		&"<=":
-			if first_value == null:
-				return true
-			elif second_value == null:
-				return false
-			else:
-				return first_value <= second_value
-		&">=":
-			if first_value == null:
-				return false
-			elif second_value == null:
-				return true
-			else:
-				return first_value >= second_value
-		&"==":
-			if first_value == null:
-				if typeof(second_value) == TYPE_BOOL:
-					return second_value == false
-				else:
-					return second_value == null
-			else:
-				return first_value == second_value
-		&"!=":
-			if first_value == null:
-				if typeof(second_value) == TYPE_BOOL:
-					return second_value == true
-				else:
-					return second_value != null
-			else:
-				return first_value != second_value
+    match operator:
+        &"in":
+            if first_value == null or second_value == null:
+                return false
+            else:
+                return first_value in second_value
+        &"<":
+            if first_value == null:
+                return true
+            elif second_value == null:
+                return false
+            else:
+                return first_value < second_value
+        &">":
+            if first_value == null:
+                return false
+            elif second_value == null:
+                return true
+            else:
+                return first_value > second_value
+        &"<=":
+            if first_value == null:
+                return true
+            elif second_value == null:
+                return false
+            else:
+                return first_value <= second_value
+        &">=":
+            if first_value == null:
+                return false
+            elif second_value == null:
+                return true
+            else:
+                return first_value >= second_value
+        &"==":
+            if first_value == null:
+                if typeof(second_value) == TYPE_BOOL:
+                    return second_value == false
+                else:
+                    return second_value == null
+            else:
+                return first_value == second_value
+        &"!=":
+            if first_value == null:
+                if typeof(second_value) == TYPE_BOOL:
+                    return second_value == true
+                else:
+                    return second_value != null
+            else:
+                return first_value != second_value
 
-	return false
+    return false
 
 
 # Apply an operation from one value to another.
 func _apply_operation(operator: String, first_value, second_value):
-	match operator:
-		&"=":
-			return second_value
-		&"+", &"+=":
-			return first_value + second_value
-		&"-", &"-=":
-			return first_value - second_value
-		&"/", &"/=":
-			return first_value / second_value
-		&"*", &"*=":
-			return first_value * second_value
-		&"%":
-			return first_value % second_value
-		&"and":
-			return first_value and second_value
-		&"or":
-			return first_value or second_value
+    match operator:
+        &"=":
+            return second_value
+        &"+", &"+=":
+            return first_value + second_value
+        &"-", &"-=":
+            return first_value - second_value
+        &"/", &"/=":
+            return first_value / second_value
+        &"*", &"*=":
+            return first_value * second_value
+        &"%":
+            return first_value % second_value
+        &"and":
+            return first_value and second_value
+        &"or":
+            return first_value or second_value
 
-	assert(false, DMConstants.translate(&"runtime.unknown_operator"))
+    assert(false, DMConstants.translate(&"runtime.unknown_operator"))
 
 
 # Check if a dialogue line contains meaningful information.
 func _is_valid(line: DialogueLine) -> bool:
-	if line == null:
-		return false
-	if line.type == DMConstants.TYPE_MUTATION and line.mutation == null:
-		return false
-	if line.type == DMConstants.TYPE_RESPONSE and line.get(&"responses").size() == 0:
-		return false
-	return true
+    if line == null:
+        return false
+    if line.type == DMConstants.TYPE_MUTATION and line.mutation == null:
+        return false
+    if line.type == DMConstants.TYPE_RESPONSE and line.get(&"responses").size() == 0:
+        return false
+    return true
 
 
 # Check that a thing has a given method.
 func _thing_has_method(thing, method: String, args: Array) -> bool:
-	if not is_instance_valid(thing):
-		return false
+    if not is_instance_valid(thing):
+        return false
 
-	if Builtins.is_supported(thing, method):
-		return thing != _autoloads
-	elif thing is Dictionary:
-		return false
+    if Builtins.is_supported(thing, method):
+        return thing != _autoloads
+    elif thing is Dictionary:
+        return false
 
-	if method in [&"call", &"call_deferred"]:
-		return thing.has_method(args[0])
+    if method in [&"call", &"call_deferred"]:
+        return thing.has_method(args[0])
 
-	if method == &"emit_signal":
-		return thing.has_signal(args[0])
+    if method == &"emit_signal":
+        return thing.has_signal(args[0])
 
-	if thing.has_method(method):
-		return true
+    if thing.has_method(method):
+        return true
 
-	if thing is Script:
-		thing = thing.new()
-	if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
-		# If we get this far then the method might be a C# method with a Task return type
-		return _get_dotnet_dialogue_manager().ThingHasMethod(thing, method, args)
+    if thing is Script:
+        thing = thing.new()
+    if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
+        # If we get this far then the method might be a C# method with a Task return type
+        return _get_dotnet_dialogue_manager().ThingHasMethod(thing, method, args)
 
-	return false
+    return false
 
 
 # Check if a given property exists
 func _thing_has_property(thing: Object, property: String) -> bool:
-	if thing == null:
-		return false
+    if thing == null:
+        return false
 
-	for p in thing.get_property_list():
-		if _node_properties.has(p.name):
-			# Ignore any properties on the base Node
-			continue
-		if p.name == property:
-			return true
+    for p in thing.get_property_list():
+        if _node_properties.has(p.name):
+            # Ignore any properties on the base Node
+            continue
+        if p.name == property:
+            return true
 
-	if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
-		# If we get this far then the property might be a C# constant.
-		return _get_dotnet_dialogue_manager().ThingHasConstant(thing, property)
+    if thing.get_script() and thing.get_script().resource_path.ends_with(".cs"):
+        # If we get this far then the property might be a C# constant.
+        return _get_dotnet_dialogue_manager().ThingHasConstant(thing, property)
 
-	return false
+    return false
 
 
 func _get_method_info_for(thing: Variant, method: String, args: Array) -> Dictionary:
-	# Use the thing instance id as a key for the caching dictionary.
-	var thing_instance_id: int = thing.get_instance_id()
-	if not _method_info_cache.has(thing_instance_id):
-		var methods: Dictionary = {}
-		for m in thing.get_method_list():
-			methods["%s:%d" % [m.name, m.args.size()]] = m
-			if not methods.has(m.name):
-				methods[m.name] = m
-		_method_info_cache[thing_instance_id] = methods
+    # Use the thing instance id as a key for the caching dictionary.
+    var thing_instance_id: int = thing.get_instance_id()
+    if not _method_info_cache.has(thing_instance_id):
+        var methods: Dictionary = {}
+        for m in thing.get_method_list():
+            methods["%s:%d" % [m.name, m.args.size()]] = m
+            if not methods.has(m.name):
+                methods[m.name] = m
+        _method_info_cache[thing_instance_id] = methods
 
-	var methods: Dictionary = _method_info_cache.get(thing_instance_id, {})
-	var method_key: String = "%s:%d" % [method, args.size()]
-	if methods.has(method_key):
-		return methods.get(method_key)
-	elif methods.has(method):
-		return methods.get(method)
-	else:
-		return _get_method_info_for(thing.new(), method, args)
+    var methods: Dictionary = _method_info_cache.get(thing_instance_id, {})
+    var method_key: String = "%s:%d" % [method, args.size()]
+    if methods.has(method_key):
+        return methods.get(method_key)
+    elif methods.has(method):
+        return methods.get(method)
+    else:
+        return _get_method_info_for(thing.new(), method, args)
 
 
 func _resolve_thing_method(thing, method: String, args: Array):
-	if Builtins.is_supported(thing):
-		var result = await Builtins.resolve_method(thing, method, args)
-		if not Builtins.has_resolve_method_failed():
-			return result
+    if Builtins.is_supported(thing):
+        var result = await Builtins.resolve_method(thing, method, args)
+        if not Builtins.has_resolve_method_failed():
+            return result
 
-	if thing.has_method(method):
-		# Try to convert any literals to the right type
-		var method_info: Dictionary = _get_method_info_for(thing, method, args)
-		var method_args: Array = method_info.args
-		if method_info.flags & METHOD_FLAG_VARARG == 0 and method_args.size() < args.size():
-			assert(false, DMConstants.translate(&"runtime.expected_n_got_n_args").format({ expected = method_args.size(), method = method, received = args.size()}))
-		for i in range(0, min(method_args.size(), args.size())):
-			var m: Dictionary = method_args[i]
-			var to_type: int = typeof(args[i])
-			if m.type == TYPE_ARRAY:
-				match m.hint_string:
-					&"String":
-						to_type = TYPE_PACKED_STRING_ARRAY
-					&"int":
-						to_type = TYPE_PACKED_INT64_ARRAY
-					&"float":
-						to_type = TYPE_PACKED_FLOAT64_ARRAY
-					&"Vector2":
-						to_type = TYPE_PACKED_VECTOR2_ARRAY
-					&"Vector3":
-						to_type = TYPE_PACKED_VECTOR3_ARRAY
-					_:
-						if m.hint_string != "":
-							assert(false, DMConstants.translate(&"runtime.unsupported_array_type").format({ type = m.hint_string}))
-			if typeof(args[i]) != to_type:
-				args[i] = convert(args[i], to_type)
+    if thing.has_method(method):
+        # Try to convert any literals to the right type
+        var method_info: Dictionary = _get_method_info_for(thing, method, args)
+        var method_args: Array = method_info.args
+        if method_info.flags & METHOD_FLAG_VARARG == 0 and method_args.size() < args.size():
+            assert(false, DMConstants.translate(&"runtime.expected_n_got_n_args").format({ expected = method_args.size(), method = method, received = args.size()}))
+        for i in range(0, min(method_args.size(), args.size())):
+            var m: Dictionary = method_args[i]
+            var to_type: int = typeof(args[i])
+            if m.type == TYPE_ARRAY:
+                match m.hint_string:
+                    &"String":
+                        to_type = TYPE_PACKED_STRING_ARRAY
+                    &"int":
+                        to_type = TYPE_PACKED_INT64_ARRAY
+                    &"float":
+                        to_type = TYPE_PACKED_FLOAT64_ARRAY
+                    &"Vector2":
+                        to_type = TYPE_PACKED_VECTOR2_ARRAY
+                    &"Vector3":
+                        to_type = TYPE_PACKED_VECTOR3_ARRAY
+                    _:
+                        if m.hint_string != "":
+                            assert(false, DMConstants.translate(&"runtime.unsupported_array_type").format({ type = m.hint_string}))
+            if typeof(args[i]) != to_type:
+                args[i] = convert(args[i], to_type)
 
-		return await thing.callv(method, args)
+        return await thing.callv(method, args)
 
     # If we get here then it's probably a C# method with a Task return type
     if thing is Script:
