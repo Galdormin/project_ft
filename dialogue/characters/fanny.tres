@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://m3bk1rcjjdl"]
 
+[ext_resource type="Texture2D" uid="uid://cv7342lboupvu" path="res://assets/characters/fanny/fanny_portrait.png" id="1_4mefb"]
 [ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://systems/types/character_portrait.gd" id="1_qlwn8"]
 [ext_resource type="Texture2D" uid="uid://p67w6mtvmxyg" path="res://assets/characters/fanny/fanny_neutral.png" id="2_bpnit"]
 [ext_resource type="Texture2D" uid="uid://bw536a804hmxk" path="res://assets/characters/fanny/fanny_angry.png" id="2_qlwn8"]
@@ -15,4 +16,5 @@ sprites = Dictionary[int, Texture2D]({
 2: ExtResource("2_qlwn8"),
 3: ExtResource("4_4mefb")
 })
+recap_portrait = ExtResource("1_4mefb")
 metadata/_custom_type_script = "uid://idtk4ps8bknq"

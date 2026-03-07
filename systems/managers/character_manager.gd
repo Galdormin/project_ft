@@ -3,6 +3,8 @@ extends Node
 const CHARACTER_FOLDER: String = "res://dialogue/characters"
 const CHARACTER_SCENE: PackedScene = preload("res://scenes/character/character.tscn")
 
+const MAIN_CHARACTER: String = "Robin"
+
 var _characters: Dictionary[String, CharacterPortrait] = {}
 
 func _ready() -> void:
@@ -13,6 +15,9 @@ func _process(_delta: float) -> void:
 
 func all_characters() -> Array[String]:
     return _characters.keys()
+
+func is_main_character(character_name: String) -> bool:
+    return character_name == MAIN_CHARACTER
 
 func get_portrait(character_name: String) -> CharacterPortrait:
     if character_name not in _characters:
