@@ -39,10 +39,9 @@ func reset_dialogue_line() -> void:
 
 func set_dialogue_line(dialogue_line: DialogueLine) -> void:
     # Set Emotion
-    for tag in dialogue_line.tags:
-        if CharacterPortrait.is_mood(tag):
-            mood = CharacterPortrait.as_mood(tag)
-            break
+    var mood_tag = dialogue_line.get_tag_value("mood")
+    if mood_tag and CharacterPortrait.is_mood(mood_tag):
+        mood = CharacterPortrait.as_mood(mood_tag)
     
      # Set line
     if dialogue_line:

@@ -12,6 +12,7 @@ const INTRO_DIALOGUE = preload("res://dialogue/intro/entrance.dialogue")
 @onready var dialogue_area: DialogueArea = %ShopEntrance.dialogue_area
 
 var switch_tween: Tween
+var _current_screen: int = 0
 
 func _ready() -> void:
     dialogue_area.start(INTRO_DIALOGUE, "start", [])
@@ -26,16 +27,18 @@ func add_character(character: String, pos: String, orientation: int, mood: Strin
     var mood_val = CharacterPortrait.as_mood(mood) 
     dialogue_area.add_character(character, pos, orientation, mood_val)
 
+func remove_character(character_name: String) -> void:
+    dialogue_area.remove_character(character_name)
+
 func switch_scene(direction: Direction) -> void:
     if switch_tween:
         switch_tween.kill()
 
     switch_tween = get_tree().create_tween()
     
-    var final_position = shop_scene.position.x
     if direction == Direction.LEFT:
-        final_position += 1920
+        _current_screen = max(_current_screen - 1, 0)
     else:
-        final_position -= 1920
+        _current_screen = min(_current_screen + 1, 1)
     
-    switch_tween.tween_property(shop_scene, "position:x", final_position, 0.8).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+    switch_tween.tween_property(shop_scene, "position:x", -1920 * _current_screen, 0.8).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)

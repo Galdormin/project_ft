@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://dbpptssj0hgu2" path="res://scenes/dialogue/recap_balloon/recap_balloon.gd" id="1_clbpk"]
 [ext_resource type="Texture2D" uid="uid://du2md7kr7bq5s" path="res://scenes/dialogue/recap_balloon/assets/arrow_left.png" id="1_fblqv"]
 [ext_resource type="PackedScene" uid="uid://bc23j1d3od2nw" path="res://scenes/dialogue/recap_balloon/recap_message.tscn" id="2_cdywq"]
+[ext_resource type="Resource" uid="uid://cijxugu4rr36l" path="res://dialogue/characters/elise.tres" id="3_8nx4e"]
+[ext_resource type="Resource" uid="uid://dnuo7w8jvqluc" path="res://dialogue/characters/fanny.tres" id="4_uva73"]
 
 [node name="RecapBalloon" type="Panel" unique_id=1051680047]
 anchors_preset = 11
@@ -38,9 +40,11 @@ theme_override_constants/separation = 30
 
 [node name="RecapMessage" parent="MarginContainer/ScrollContainer/MessageContainer" unique_id=1936995121 instance=ExtResource("2_cdywq")]
 layout_mode = 2
+character = ExtResource("3_8nx4e")
 
 [node name="RecapMessage2" parent="MarginContainer/ScrollContainer/MessageContainer" unique_id=451651295 instance=ExtResource("2_cdywq")]
 layout_mode = 2
+character = ExtResource("4_uva73")
 
 [node name="TextureButton" type="TextureButton" parent="." unique_id=537436634]
 unique_name_in_owner = true

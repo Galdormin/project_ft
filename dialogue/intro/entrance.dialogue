@@ -1,12 +1,48 @@
 ~ start
-do RecapManager.start_recap()
+do add_character("Robin", "Left", LOOK_RIGHT, "Neutral")
 
-do add_character("Robin", "Right", LOOK_LEFT, "Neutral")
-do add_character("Fanny", "Left", LOOK_RIGHT, "Angry")
+=>< client_one
 
-Robin: [#mood=Neutral] Yo, je viens pour mon premier jour de taff.
-Fanny: [#mood=Happy] Bonjour, vous devez faire erreur.
-Robin: [#Other] J'pense pas, vous avez accepté ma candidature la semaine dernière.
-Fanny: [#mood=Angry] Ah vous êtes Robin ? Je vous imaginais pas du tout comme ça...
+do wait(5)
+
+=>< client_two
+
 => END
 
+
+~ client_one
+do RecapManager.start_recap()
+do add_character("Fanny", "Right", LOOK_LEFT, "Happy")
+
+Fanny: [#mood=Happy] Salut salut Ghislaine!!
+Fanny: [#mood=Sad] Vous êtes pas ghislaine, vous êtes qui ?.
+Robin: [#mood=Neutral] J'suis le nouveau fleuriste. Appelle moi Robin.
+Fanny: [#mood=Neutral] Ah oui c'est vrai, elle m'avait dit ?
+Fanny: Je vous imaginais pas du tout comme ça... 
+Robin: [#mood=Angry] Tu m'imaginais comment ?
+Fanny: [#mood=Sad] Euh... Je sais pas...
+Fanny: [#mood=Happy] Bon, c'est pas tout, mais normalement Ghislaine à laisser une commande pour moi.
+Robin: C'est les roses qui sont là-bas ?
+Fanny: Oui c'est ça, t'as l'oeil à ce que je vois.
+
+Robin: [#mood=Neutral] Tiens les voici !
+Fanny: Merci, à la prochaine Robin !
+
+do remove_character("Fanny")
+=> END
+
+~ client_two
+do RecapManager.start_recap()
+do add_character("Elise", "Right", LOOK_LEFT, "Neutral")
+
+Elise: ...
+Robin: ...
+Elise: ...
+Robin: [#mood=Angry] Oui ?!
+Elise: Euh...
+
+do remove_character("Elise")
+
+Robin: [#mood=Neutral] Bon... J'imagine qu'elle repassera...
+
+=> END

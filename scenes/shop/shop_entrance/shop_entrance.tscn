@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://d38wsdgefvoc" path="res://assets/background/desk.png" id="2_ggvpp"]
 [ext_resource type="Script" uid="uid://cbinyesaonc23" path="res://scenes/shop/dialogue_area.gd" id="4_qmwx1"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x77iv"]
+size = Vector2(1830, 1010)
+
 [node name="ShopEntrance" type="Node2D" unique_id=726382332]
 script = ExtResource("1_tl2in")
 
@@ -19,13 +22,17 @@ scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_ggvpp")
 centered = false
 
-[node name="DialogueArea" type="Node2D" parent="." unique_id=1147973122 node_paths=PackedStringArray("slots")]
+[node name="DialogueArea" type="Area2D" parent="." unique_id=1120379260 node_paths=PackedStringArray("slots")]
 script = ExtResource("4_qmwx1")
 slots = {
 "Left": NodePath("MarkerLeft"),
 "Right": NodePath("MarkerRight")
 }
 metadata/_custom_type_script = "uid://cbinyesaonc23"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DialogueArea" unique_id=760132705]
+position = Vector2(961, 545)
+shape = SubResource("RectangleShape2D_x77iv")
 
 [node name="MarkerLeft" type="Marker2D" parent="DialogueArea" unique_id=1993832172]
 position = Vector2(394, 1841)

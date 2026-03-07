@@ -9,7 +9,6 @@
 
 [resource]
 script = ExtResource("1_mewo4")
-name = "Robin"
 sprites = Dictionary[int, Texture2D]({
 0: ExtResource("2_osiqd"),
 1: ExtResource("3_aqx6b"),
