@@ -1,7 +1,7 @@
 class_name RecapMessage
 extends HBoxContainer
 
-@export var character: CharacterPortrait
+@export var character: CharacterData
 
 @onready var portrait: TextureRect = %Portrait
 @onready var name_label: Label = %NameLabel
@@ -13,7 +13,7 @@ func _ready() -> void:
         return
     
     name_label.text = character.name
-    portrait.texture = character.recap_portrait
+    portrait.texture = character.portrait.recap_portrait
     
     if CharacterManager.is_main_character(character.name):
         move_child($PortraitContainer, -1)

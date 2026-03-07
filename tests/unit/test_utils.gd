@@ -9,4 +9,4 @@ func test_assert_subset():
 
 func test_get_files_recursive():
     var files = TestUtils.get_files_recursive("res://", "json")
-    assert_eq(len(files), 2)
+    assert_eq(len(files), 3)

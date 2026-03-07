@@ -5,7 +5,7 @@ const CHARACTER_SCENE: PackedScene = preload("res://scenes/character/character.t
 
 const MAIN_CHARACTER: String = "Robin"
 
-var _characters: Dictionary[String, CharacterPortrait] = {}
+var _characters: Dictionary[String, CharacterData] = {}
 
 func _ready() -> void:
     _load_characters()
@@ -19,7 +19,7 @@ func all_characters() -> Array[String]:
 func is_main_character(character_name: String) -> bool:
     return character_name == MAIN_CHARACTER
 
-func get_portrait(character_name: String) -> CharacterPortrait:
+func get_character_data(character_name: String) -> CharacterData:
     if character_name not in _characters:
         Loggie.error("Portrait queried with unkown character name: " + character_name)
         return null
@@ -32,7 +32,7 @@ func get_character_node(character_name: String) -> Character:
         return null
     
     var character_node: Character = CHARACTER_SCENE.instantiate()
-    character_node.portrait = get_portrait(character_name)
+    character_node.character_data = get_character_data(character_name)
     return character_node
 
 func _load_characters() -> void:
@@ -48,7 +48,7 @@ func _load_characters() -> void:
             continue
         
         var res = load(CHARACTER_FOLDER + "/" + file)
-        if res is not CharacterPortrait:
+        if res is not CharacterData:
             Loggie.warn("Non CharacterPortrait resource file found in Character folder: " + file)
             continue
         

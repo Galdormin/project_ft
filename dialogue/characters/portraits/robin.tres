@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://cxnkthmgyrrap"]
+
+[ext_resource type="Texture2D" uid="uid://jpy1s8d6wlya" path="res://assets/characters/robin/robin_portrait.png" id="1_bmtes"]
+[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://systems/types/character_portrait.gd" id="1_mewo4"]
+[ext_resource type="Texture2D" uid="uid://dw3m3y6gb1gt8" path="res://assets/characters/robin/robin_angry.png" id="2_nssau"]
+[ext_resource type="Texture2D" uid="uid://c2kkwlkfomj2p" path="res://assets/characters/robin/robin_neutral.png" id="2_osiqd"]
+[ext_resource type="Texture2D" uid="uid://br0qiq2k0xjjs" path="res://assets/characters/robin/robin_happy.png" id="3_aqx6b"]
+[ext_resource type="Texture2D" uid="uid://t1dhss8cgsm8" path="res://assets/characters/robin/robin_sad.png" id="4_osiqd"]
+
+[resource]
+script = ExtResource("1_mewo4")
+name = "Robin"
+sprites = Dictionary[int, Texture2D]({
+0: ExtResource("2_osiqd"),
+1: ExtResource("3_aqx6b"),
+2: ExtResource("2_nssau"),
+3: ExtResource("4_osiqd")
+})
+recap_portrait = ExtResource("1_bmtes")
+metadata/_custom_type_script = "uid://idtk4ps8bknq"

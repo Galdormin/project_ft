@@ -19,7 +19,7 @@ func _ready() -> void:
 func add_message(line: DialogueLine) -> void:
     if not _current_recap_message or _current_recap_message.character.name != line.character:
         _current_recap_message = RECAP_MESSAGE_SCENE.instantiate()
-        _current_recap_message.character = CharacterManager.get_portrait(line.character)
+        _current_recap_message.character = CharacterManager.get_character_data(line.character)
         message_container.add_child(_current_recap_message)
     
     _current_recap_message.add_message(line)
