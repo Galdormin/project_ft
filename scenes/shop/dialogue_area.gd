@@ -16,6 +16,9 @@ func _ready() -> void:
     pass
 
 func _unhandled_input(event: InputEvent) -> void:
+    if not _dialogue_line:
+        return
+    
     if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
         _next(_dialogue_line.next_id)
     elif event.is_action_pressed("ui_accept") and get_viewport().gui_get_focus_owner() == self:
@@ -27,7 +30,7 @@ func start(resource: DialogueResource, title: String, _extra_game_states: Array)
     show()
 
 func add_character(character_name: String, pos: String, orientation: CharacterPortrait.Orientaion, mood: CharacterPortrait.Mood) -> void:
-    Loggie.debug("Add character %s at position %d" % [character_name, pos])
+    Loggie.debug("Add character %s at position %s" % [character_name, pos])
     
     if character_name in _characters:
         Loggie.warn("Try to add Character %s but already in scene." % character_name)
@@ -50,7 +53,6 @@ func add_character(character_name: String, pos: String, orientation: CharacterPo
         character_node.height = 1400
     
     slots[pos].add_child(character_node)
-
 
 func _next(next_id: String) -> void:
     _dialogue_line = await dialogue_resource.get_next_dialogue_line(next_id)

@@ -13,9 +13,9 @@ enum Orientaion {
     RIGHT,
 }
 
-@export var name: String
 @export var default_orientation: CharacterPortrait.Orientaion
 @export var sprites: Dictionary[CharacterPortrait.Mood, Texture2D]
+@export var recap_portrait: Texture2D
 
 
 static func is_mood(mood: String) -> bool:

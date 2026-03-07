@@ -3,13 +3,20 @@
 [ext_resource type="Script" uid="uid://y7h6mcnmf53y" path="res://scenes/shop/shop_main.gd" id="1_enpsq"]
 [ext_resource type="PackedScene" uid="uid://1sgeh4i2ocr0" path="res://scenes/shop/shop_entrance/shop_entrance.tscn" id="1_vxj7x"]
 [ext_resource type="PackedScene" uid="uid://dcb5tax3h7c1" path="res://scenes/dialogue/recap_balloon/recap_balloon.tscn" id="2_d32op"]
+[ext_resource type="PackedScene" uid="uid://m2cwfdc4lwxt" path="res://scenes/shop/shop_shelf/shop_shelf.tscn" id="3_bon5k"]
 
 [node name="ShopMain" type="Node2D" unique_id=806536594]
 script = ExtResource("1_enpsq")
 
-[node name="ShopEntrance" parent="." unique_id=825147829 instance=ExtResource("1_vxj7x")]
+[node name="ShopScene" type="Node2D" parent="." unique_id=533255898]
+
+[node name="ShopEntrance" parent="ShopScene" unique_id=825147829 instance=ExtResource("1_vxj7x")]
+unique_name_in_owner = true
+
+[node name="ShopShelf" parent="ShopScene" unique_id=1730269642 instance=ExtResource("3_bon5k")]
+unique_name_in_owner = true
+position = Vector2(1920, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1284566562]
-visible = false
 
 [node name="RecapBalloon" parent="CanvasLayer" unique_id=449813091 instance=ExtResource("2_d32op")]

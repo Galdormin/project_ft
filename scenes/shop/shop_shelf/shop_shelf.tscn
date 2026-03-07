@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://m2cwfdc4lwxt"]
+
+[ext_resource type="Texture2D" uid="uid://c7lgt04tugcsf" path="res://assets/background/boutique_storage.png" id="1_3t2iq"]
+[ext_resource type="Script" uid="uid://bd655f5pvjcsi" path="res://scenes/shop/shop_shelf/shop_shelf.gd" id="1_ah2ms"]
+[ext_resource type="Texture2D" uid="uid://c2t3u0uy0xsqi" path="res://assets/flowers/rose/rose_bouquet.png" id="2_ck047"]
+[ext_resource type="Script" uid="uid://bdbpfbe8qctrj" path="res://scenes/shop/shop_shelf/rose.gd" id="2_rxi2r"]
+[ext_resource type="Texture2D" uid="uid://dphdpoq4chstw" path="res://assets/flowers/rose/rose_bucket.png" id="3_rxi2r"]
+[ext_resource type="Texture2D" uid="uid://bkaws63ejth0j" path="res://assets/flowers/rose/rose.png" id="5_x8mqp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rxi2r"]
+radius = 120.03749
+
+[node name="ShopShelf" type="Node2D" unique_id=1730269642]
+script = ExtResource("1_ah2ms")
+
+[node name="BoutiqueStorage" type="Sprite2D" parent="." unique_id=51873654]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("1_3t2iq")
+centered = false
+
+[node name="Rose" type="Node2D" parent="." unique_id=1622658082]
+script = ExtResource("2_rxi2r")
+
+[node name="RoseBouquet" type="Sprite2D" parent="Rose" unique_id=1970451239]
+position = Vector2(1084, 752)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_ck047")
+
+[node name="RoseBucket" type="Sprite2D" parent="Rose" unique_id=997168102]
+position = Vector2(1077, 866)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("3_rxi2r")
+
+[node name="Area2D" type="Area2D" parent="Rose" unique_id=1621578719]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Rose/Area2D" unique_id=55162733]
+position = Vector2(1077, 754)
+shape = SubResource("CircleShape2D_rxi2r")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1213465072]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=268500526]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5686275)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ColorRect" unique_id=1464603440]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/ColorRect/HBoxContainer" unique_id=1872100575]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("5_x8mqp")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ColorRect/HBoxContainer" unique_id=527530054]
+layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/ColorRect/HBoxContainer/MarginContainer" unique_id=2068636086]
+custom_minimum_size = Vector2(1000, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 38
+bbcode_enabled = true
+text = "[font_size=56][wave][b]La Rose[/b][/wave][/font_size]
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+horizontal_alignment = 1
+vertical_alignment = 1

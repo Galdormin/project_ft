@@ -2,117 +2,19 @@
 
 [ext_resource type="Script" uid="uid://dbpptssj0hgu2" path="res://scenes/dialogue/recap_balloon/recap_balloon.gd" id="1_clbpk"]
 [ext_resource type="Texture2D" uid="uid://du2md7kr7bq5s" path="res://scenes/dialogue/recap_balloon/assets/arrow_left.png" id="1_fblqv"]
+[ext_resource type="PackedScene" uid="uid://bc23j1d3od2nw" path="res://scenes/dialogue/recap_balloon/recap_message.tscn" id="2_cdywq"]
 
-[sub_resource type="Animation" id="Animation_fblqv"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1920, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/TextureButton:flip_h")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_clbpk"]
-resource_name = "close_panel"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 0.5),
-"update": 0,
-"values": [Vector2(1360, 0), Vector2(1920, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/TextureButton:flip_h")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_xxcs5"]
-resource_name = "open_panel"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Panel:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
-"update": 0,
-"values": [Vector2(1920, 0), Vector2(1360, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Panel/TextureButton:flip_h")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_cdywq"]
-_data = {
-&"RESET": SubResource("Animation_fblqv"),
-&"close_panel": SubResource("Animation_clbpk"),
-&"open_panel": SubResource("Animation_xxcs5")
-}
-
-[node name="RecapBalloon" type="Control" unique_id=304464001]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_clbpk")
-
-[node name="Panel" type="Panel" parent="." unique_id=1051680047]
-layout_mode = 1
+[node name="RecapBalloon" type="Panel" unique_id=1051680047]
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 560.0005
+offset_right = 730.0
 grow_horizontal = 0
 grow_vertical = 2
+script = ExtResource("1_clbpk")
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=95327596]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=95327596]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,37 +26,23 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/MarginContainer" unique_id=77302687]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=77302687]
 layout_mode = 2
 
-[node name="MessageContainer" type="VBoxContainer" parent="Panel/MarginContainer/ScrollContainer" unique_id=1514695861]
+[node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer" unique_id=1514695861]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 30
 
-[node name="MessageText" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1939476282]
+[node name="RecapMessage" parent="MarginContainer/ScrollContainer/MessageContainer" unique_id=1936995121 instance=ExtResource("2_cdywq")]
 layout_mode = 2
-bbcode_enabled = true
-text = "[color=red]JOHN[/color] --- [indent]Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.[/indent]"
-fit_content = true
-shortcut_keys_enabled = false
 
-[node name="MessageText2" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1474097914]
+[node name="RecapMessage2" parent="MarginContainer/ScrollContainer/MessageContainer" unique_id=451651295 instance=ExtResource("2_cdywq")]
 layout_mode = 2
-bbcode_enabled = true
-text = "[color=green]ROBERT[/color] --- [indent]Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.[/indent]"
-fit_content = true
-shortcut_keys_enabled = false
 
-[node name="MessageText3" type="RichTextLabel" parent="Panel/MarginContainer/ScrollContainer/MessageContainer" unique_id=1748064903]
-layout_mode = 2
-bbcode_enabled = true
-text = "[color=red]JOHN[/color] --- [indent]Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.[/indent]"
-fit_content = true
-shortcut_keys_enabled = false
-
-[node name="TextureButton" type="TextureButton" parent="Panel" unique_id=537436634]
+[node name="TextureButton" type="TextureButton" parent="." unique_id=537436634]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 4
@@ -166,7 +54,3 @@ offset_right = 21.0
 offset_bottom = 32.0
 grow_vertical = 2
 texture_normal = ExtResource("1_fblqv")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1424629969]
-unique_name_in_owner = true
-libraries/ = SubResource("AnimationLibrary_cdywq")

@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://cci15qjboep3f"]
+[gd_scene format=3 uid="uid://06vyqndebncm"]
 
-[ext_resource type="Script" uid="uid://co0xoiwcmyuhc" path="res://scenes/character/character.gd" id="2_cuyo6"]
+[ext_resource type="Script" uid="uid://m4li0ssar4qv" path="res://scenes/character/character.gd" id="2_cuyo6"]
 [ext_resource type="Texture2D" uid="uid://br0qiq2k0xjjs" path="res://assets/characters/robin/robin_happy.png" id="3_f8hpl"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="6_bix7t"]
 
@@ -27,7 +27,6 @@ RichTextLabel/font_sizes/normal_font_size = 28
 [node name="Character" type="Node2D" unique_id=1465911786]
 position = Vector2(0, -600)
 script = ExtResource("2_cuyo6")
-height = 1200.0
 
 [node name="CharacterPortrait" type="Sprite2D" parent="." unique_id=1168875597]
 unique_name_in_owner = true
