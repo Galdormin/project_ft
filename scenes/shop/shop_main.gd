@@ -6,7 +6,7 @@ enum Direction {LEFT, RIGHT}
 const LOOK_LEFT: int = CharacterPortrait.Orientaion.LEFT
 const LOOK_RIGHT: int = CharacterPortrait.Orientaion.RIGHT
 
-const dialogue = preload("res://dialogue/intro/entrance.dialogue")
+const INTRO_DIALOGUE = preload("res://dialogue/intro/entrance.dialogue")
 
 @onready var shop_scene: Node2D = $ShopScene
 @onready var dialogue_area: DialogueArea = %ShopEntrance.dialogue_area
@@ -14,7 +14,7 @@ const dialogue = preload("res://dialogue/intro/entrance.dialogue")
 var switch_tween: Tween
 
 func _ready() -> void:
-    dialogue_area.start(dialogue, "start", [])
+    dialogue_area.start(INTRO_DIALOGUE, "start", [])
 
 func _process(_delta: float) -> void:
     if Input.is_action_just_pressed("switch_left"):
