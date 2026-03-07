@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b7jc08bs1aku6"
+path="res://.godot/imported/test_recap_manager.dialogue-2220023fd45b7ca176bb598fc369e892.tres"
+
+[deps]
+
+source_file="res://tests/unit/sample_data/test_recap_manager.dialogue"
+dest_files=["res://.godot/imported/test_recap_manager.dialogue-2220023fd45b7ca176bb598fc369e892.tres"]
+
+[params]
+
+defaults=true

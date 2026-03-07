@@ -1,4 +1,6 @@
 ~ start
+do RecapManager.start_recap()
+
 do add_character("Robin", "Right", LOOK_LEFT, "Neutral")
 do add_character("Fanny", "Left", LOOK_RIGHT, "Angry")
 

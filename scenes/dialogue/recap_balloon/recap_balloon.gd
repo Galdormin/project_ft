@@ -8,10 +8,10 @@ var _opened: bool = false
 @onready var message_container: VBoxContainer = %MessageContainer
 @onready var open_button: TextureButton = %TextureButton
 
-
 func _ready() -> void:
     open_button.pressed.connect(_on_open_button_pressed)
-    DialogueManager.got_dialogue.connect(_on_new_dialogue_line)
+    RecapManager.line_added.connect(_on_recap_line_added)
+    RecapManager.cleared.connect(_on_recap_cleared)
 
 func add_message(character: String, text: String) -> void:
     var bbcode_text = "[color=red]%s[/color] --- [indent]%s[/indent]" % [character, text]
@@ -41,10 +41,10 @@ func switch_panel() -> void:
 func _on_open_button_pressed() -> void:
     switch_panel()
 
-func _on_new_dialogue_line(line: DialogueLine) -> void:
-    if not is_active:
-        return
-    
+func _on_recap_line_added(line: DialogueLine) -> void:
     add_message(line.character, line.text)
+
+func _on_recap_cleared() -> void:
+    clear_message()
 
 #endregion

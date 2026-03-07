@@ -1,0 +1,8 @@
+~ test_start_recap
+Nathan: This is some non recap dialogue.
+do RecapManager.start_recap()
+Nathan: This is some recap dialogue.
+Nathan: This is some recap other dialogue.
+do RecapManager.end_recap()
+Nathan: This is some non recap dialogue.
+=> END
