@@ -1,0 +1,28 @@
+[gd_resource type="Theme" format=3 uid="uid://oobf0pubduus"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fry4t"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.9448096, 0.8355882, 0.78114307, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 5
+
+[resource]
+Label/colors/font_color = Color(0.98250014, 0.87066966, 0.80162215, 1)
+Label/font_sizes/font_size = 22
+MarginContainer/constants/margin_bottom = 5
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 5
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_fry4t")
+RichTextLabel/colors/default_color = Color(0.12225223, 0.12225223, 0.12225223, 1)
+RichTextLabel/font_sizes/bold_font_size = 18
+RichTextLabel/font_sizes/bold_italics_font_size = 18
+RichTextLabel/font_sizes/italics_font_size = 18
+RichTextLabel/font_sizes/mono_font_size = 18
+RichTextLabel/font_sizes/normal_font_size = 18
