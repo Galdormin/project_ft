@@ -29,6 +29,7 @@ SceneManager="*res://systems/managers/scene_manager.gd"
 BalloonManager="*res://systems/managers/balloon_manager.gd"
 CharacterManager="*uid://c8gmatil1bx01"
 RecapManager="*uid://cdghg2cv6p6ui"
+StoryManager="*uid://bd7nhubd6kbxy"
 
 [dialogue_manager]
 

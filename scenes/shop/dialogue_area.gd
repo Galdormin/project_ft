@@ -57,6 +57,7 @@ func remove_character(character_name: String) -> void:
         return
     
     _characters[character_name].queue_free()
+    _characters.erase(character_name)
 
 func _next(next_id: String) -> void:
     _dialogue_line = await dialogue_resource.get_next_dialogue_line(next_id)

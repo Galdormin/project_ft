@@ -25,7 +25,28 @@ Fanny: [#mood=Happy] Bon, c'est pas tout, mais normalement Ghislaine à laisser 
 Robin: C'est les roses qui sont là-bas ?
 Fanny: Oui c'est ça, t'as l'oeil à ce que je vois.
 
+do wait_flower()
+
 Robin: [#mood=Neutral] Tiens les voici !
+
+set StoryManager.try_amount = 0
+while StoryManager.given_flower != "Rose"
+	do StoryManager.try_amount += 1
+	
+	if StoryManager.try_amount == 1
+		Fanny: Non, ce ne sont pas des roses.
+	else:
+		Fanny: [#mood=Angry] Non, toujours pas
+	
+	match StoryManager.try_amount
+		when 1
+			Fanny: Les roses que je veux sont rouges
+		when 2
+			Fanny: Il me semble que Ghislaine gardait un registre des plantes, tu devrais regarder là
+		when > 3
+			Fanny: ...
+	do wait_flower()
+
 Fanny: Merci, à la prochaine Robin !
 
 do remove_character("Fanny")

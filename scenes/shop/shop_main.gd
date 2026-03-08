@@ -30,6 +30,9 @@ func add_character(character: String, pos: String, orientation: int, mood: Strin
 func remove_character(character_name: String) -> void:
     dialogue_area.remove_character(character_name)
 
+func wait_flower() -> void:
+    await %ShopEntrance.wait_flower()
+
 func switch_scene(direction: Direction) -> void:
     if switch_tween:
         switch_tween.kill()
