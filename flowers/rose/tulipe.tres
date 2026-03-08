@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FlowerData" format=3 uid="uid://div3ljpbwrjx8"]
+
+[ext_resource type="Texture2D" uid="uid://bbh54gkl1b11l" path="res://assets/flowers/tulipe/tulipe.png" id="1_yagke"]
+[ext_resource type="Script" uid="uid://bkxt6gm20wutv" path="res://systems/types/flower_data.gd" id="2_5ahbd"]
+
+[resource]
+script = ExtResource("2_5ahbd")
+name = "Tulipe"
+description = "Les tulipes constituent un genre de plantes herbacées, de la famille des Liliacées. Le genre compte une centaine d'espèces réparties en quatre sous-genres, originaires du Paléarctique (les régions tempérées de l'Ancien Monde). "
+image = ExtResource("1_yagke")
+metadata/_custom_type_script = "uid://bkxt6gm20wutv"

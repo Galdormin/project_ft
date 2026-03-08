@@ -16,7 +16,7 @@ func test_character_names():
             assert_has(accepted_character, char, "dialogue '%s' has unsupported character '%s'" % [dialogue_file, char])
 
 
-## Test that all emotions tags (e.g. #[Angry]) are correctly written
+## Test that all emotions tags (e.g. #[mood=Angry]) are correctly written
 func test_emotion_metadata():
     for dialogue_file in get_all_dialogue():
         var dialogue: DialogueResource = load(dialogue_file)

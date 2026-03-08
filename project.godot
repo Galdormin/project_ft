@@ -23,13 +23,13 @@ config/icon="res://assets/icon.svg"
 
 [autoload]
 
-Enums="*uid://5vm67vt2k0hq"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 Loggie="*res://addons/loggie/loggie.gd"
 SceneManager="*res://systems/managers/scene_manager.gd"
 BalloonManager="*res://systems/managers/balloon_manager.gd"
 CharacterManager="*uid://c8gmatil1bx01"
 RecapManager="*uid://cdghg2cv6p6ui"
+StoryManager="*uid://bd7nhubd6kbxy"
 
 [dialogue_manager]
 
@@ -39,7 +39,6 @@ runtime/balloon_path="res://scenes/dialogue/fade_balloon/fade_balloon.tscn"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=3
 window/size/initial_position_type=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"

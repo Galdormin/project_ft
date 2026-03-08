@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://bc23j1d3od2nw"]
+
+[ext_resource type="Texture2D" uid="uid://jpy1s8d6wlya" path="res://assets/characters/robin/robin_portrait.png" id="1_ail7p"]
+[ext_resource type="Theme" uid="uid://oobf0pubduus" path="res://scenes/dialogue/recap_balloon/assets/recap_message_theme.tres" id="1_tswvi"]
+[ext_resource type="Script" uid="uid://7ytrl36svmhf" path="res://scenes/dialogue/recap_balloon/recap_message.gd" id="2_q0w3u"]
+
+[node name="RecapMessage" type="HBoxContainer" unique_id=1936995121]
+offset_right = 771.0
+offset_bottom = 527.0
+theme = ExtResource("1_tswvi")
+alignment = 1
+script = ExtResource("2_q0w3u")
+
+[node name="PortraitContainer" type="VBoxContainer" parent="." unique_id=2071654061]
+layout_mode = 2
+
+[node name="Portrait" type="TextureRect" parent="PortraitContainer" unique_id=1138333582]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+texture = ExtResource("1_ail7p")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=232414311]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=2142368950]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Robin"
+uppercase = true
+
+[node name="MessageContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=1578541066]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Message" type="PanelContainer" parent="VBoxContainer/MessageContainer" unique_id=726146732]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MessageContainer/Message" unique_id=1366497254]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MessageContainer/Message/MarginContainer" unique_id=1167459584]
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+fit_content = true
+
+[node name="Message2" type="PanelContainer" parent="VBoxContainer/MessageContainer" unique_id=1900033817]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MessageContainer/Message2" unique_id=854259286]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MessageContainer/Message2/MarginContainer" unique_id=913131747]
+layout_mode = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+fit_content = true

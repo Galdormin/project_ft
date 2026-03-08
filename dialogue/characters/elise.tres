@@ -1,18 +1,10 @@
-[gd_resource type="Resource" script_class="CharacterPortrait" format=3 uid="uid://cqqtc1t6yd5cc"]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://cijxugu4rr36l"]
 
-[ext_resource type="Script" uid="uid://idtk4ps8bknq" path="res://systems/types/character_portrait.gd" id="1_edm3i"]
-[ext_resource type="Texture2D" uid="uid://cvddtu4qoif1c" path="res://assets/characters/elise/elise_neutral.png" id="2_3wuhu"]
-[ext_resource type="Texture2D" uid="uid://bnxu638v0x8yj" path="res://assets/characters/elise/elise_sad.png" id="3_3wuhu"]
-[ext_resource type="Texture2D" uid="uid://cekhlnl8lin7y" path="res://assets/characters/elise/elise_happy.png" id="3_l855t"]
-[ext_resource type="Texture2D" uid="uid://bxn3kx0ldf2ax" path="res://assets/characters/elise/elise_angry.png" id="4_l855t"]
+[ext_resource type="Script" uid="uid://b8k20jc7kr4i" path="res://systems/types/character_data.gd" id="1_6gmkf"]
+[ext_resource type="Resource" uid="uid://cqqtc1t6yd5cc" path="res://dialogue/characters/portraits/elise.tres" id="1_txcdl"]
 
 [resource]
-script = ExtResource("1_edm3i")
+script = ExtResource("1_6gmkf")
 name = "Elise"
-sprites = Dictionary[int, Texture2D]({
-0: ExtResource("2_3wuhu"),
-1: ExtResource("3_l855t"),
-2: ExtResource("4_l855t"),
-3: ExtResource("3_3wuhu")
-})
-metadata/_custom_type_script = "uid://idtk4ps8bknq"
+portrait = ExtResource("1_txcdl")
+metadata/_custom_type_script = "uid://b8k20jc7kr4i"

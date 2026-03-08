@@ -1,7 +1,8 @@
-[gd_scene format=3 uid="uid://cci15qjboep3f"]
+[gd_scene format=3 uid="uid://06vyqndebncm"]
 
-[ext_resource type="Script" uid="uid://co0xoiwcmyuhc" path="res://scenes/character/character.gd" id="2_cuyo6"]
+[ext_resource type="Script" uid="uid://m4li0ssar4qv" path="res://scenes/character/character.gd" id="2_cuyo6"]
 [ext_resource type="Texture2D" uid="uid://br0qiq2k0xjjs" path="res://assets/characters/robin/robin_happy.png" id="3_f8hpl"]
+[ext_resource type="FontFile" uid="uid://dxwu22gatf5u7" path="res://assets/fonts/Varela_Round/VarelaRound-Regular.ttf" id="3_fgi2k"]
 [ext_resource type="Script" uid="uid://g32um0mltv5d" path="res://addons/dialogue_manager/dialogue_label.gd" id="6_bix7t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ex5l"]
@@ -20,14 +21,37 @@ expand_margin_top = 10.0
 expand_margin_right = 10.0
 expand_margin_bottom = 10.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mutn8"]
+bg_color = Color(0.97600573, 0.8596019, 0.74886686, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.8569678, 0.5895403, 0.30906978, 1)
+border_blend = true
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
 [sub_resource type="Theme" id="Theme_bblvu"]
 Panel/styles/panel = SubResource("StyleBoxFlat_7ex5l")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_mutn8")
+RichTextLabel/colors/default_color = Color(0.32064804, 0.13414374, 0.09429444, 1)
+RichTextLabel/font_sizes/bold_font_size = 28
+RichTextLabel/font_sizes/bold_italics_font_size = 28
+RichTextLabel/font_sizes/italics_font_size = 28
+RichTextLabel/font_sizes/mono_font_size = 28
 RichTextLabel/font_sizes/normal_font_size = 28
+RichTextLabel/fonts/normal_font = ExtResource("3_fgi2k")
 
 [node name="Character" type="Node2D" unique_id=1465911786]
 position = Vector2(0, -600)
 script = ExtResource("2_cuyo6")
-height = 1200.0
 
 [node name="CharacterPortrait" type="Sprite2D" parent="." unique_id=1168875597]
 unique_name_in_owner = true
@@ -36,7 +60,6 @@ texture = ExtResource("3_f8hpl")
 
 [node name="DialogueBalloon" type="Control" parent="." unique_id=1769559521]
 unique_name_in_owner = true
-visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 5
@@ -49,7 +72,7 @@ offset_bottom = 52.0
 grow_horizontal = 2
 theme = SubResource("Theme_bblvu")
 
-[node name="Panel" type="Panel" parent="DialogueBalloon" unique_id=166121219]
+[node name="Panel" type="PanelContainer" parent="DialogueBalloon" unique_id=237033436]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,12 +81,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="DialogueBalloon/Panel" unique_id=1543079581]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 
 [node name="DialogueLabel" type="RichTextLabel" parent="DialogueBalloon/Panel/MarginContainer" unique_id=74283478]
 unique_name_in_owner = true

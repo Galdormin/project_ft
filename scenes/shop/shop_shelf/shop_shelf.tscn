@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://m2cwfdc4lwxt"]
+
+[ext_resource type="Texture2D" uid="uid://c7lgt04tugcsf" path="res://assets/background/boutique_storage.png" id="1_3t2iq"]
+[ext_resource type="Script" uid="uid://bd655f5pvjcsi" path="res://scenes/shop/shop_shelf/shop_shelf.gd" id="1_ah2ms"]
+[ext_resource type="Texture2D" uid="uid://c2t3u0uy0xsqi" path="res://assets/flowers/rose/rose_bouquet.png" id="2_ck047"]
+[ext_resource type="PackedScene" uid="uid://cwpfovtubc0x2" path="res://scenes/shop/shop_shelf/flower.tscn" id="3_l7i0m"]
+[ext_resource type="Texture2D" uid="uid://dphdpoq4chstw" path="res://assets/flowers/rose/rose_bucket.png" id="3_rxi2r"]
+[ext_resource type="Resource" uid="uid://vo4nswfx8yh4" path="res://flowers/rose/rose.tres" id="4_3kwiq"]
+[ext_resource type="PackedScene" uid="uid://c8rqw6pwkjir8" path="res://scenes/shop/shop_shelf/flower_description.tscn" id="6_ah2ms"]
+[ext_resource type="Resource" uid="uid://div3ljpbwrjx8" path="res://flowers/rose/tulipe.tres" id="7_3kwiq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rxi2r"]
+radius = 122.10242
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3kwiq"]
+radius = 107.042046
+
+[node name="ShopShelf" type="Node2D" unique_id=1730269642]
+script = ExtResource("1_ah2ms")
+
+[node name="BoutiqueStorage" type="Sprite2D" parent="." unique_id=51873654]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("1_3t2iq")
+centered = false
+
+[node name="FlowerContainer" type="Node2D" parent="." unique_id=408602921]
+unique_name_in_owner = true
+
+[node name="Rose" parent="FlowerContainer" unique_id=1280963341 node_paths=PackedStringArray("flower_sprite") instance=ExtResource("3_l7i0m")]
+flower_data = ExtResource("4_3kwiq")
+flower_sprite = NodePath("RoseBouquet")
+
+[node name="RoseBouquet" type="Sprite2D" parent="FlowerContainer/Rose" unique_id=1970451239]
+position = Vector2(1084, 752)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_ck047")
+
+[node name="RoseBucket" type="Sprite2D" parent="FlowerContainer/Rose" unique_id=997168102]
+position = Vector2(1077, 866)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("3_rxi2r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlowerContainer/Rose" unique_id=55162733]
+position = Vector2(1077, 754)
+shape = SubResource("CircleShape2D_rxi2r")
+
+[node name="Tulipe" parent="FlowerContainer" unique_id=614386079 node_paths=PackedStringArray("flower_sprite") instance=ExtResource("3_l7i0m")]
+flower_data = ExtResource("7_3kwiq")
+flower_sprite = NodePath("TulipeBouquet")
+
+[node name="TulipeBouquet" type="Sprite2D" parent="FlowerContainer/Tulipe" unique_id=753703233]
+modulate = Color(4.042983e-06, 0.69351727, 0.97177106, 1)
+position = Vector2(642, 678)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_ck047")
+
+[node name="RoseBucket" type="Sprite2D" parent="FlowerContainer/Tulipe" unique_id=1632172824]
+position = Vector2(629, 811.00006)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_rxi2r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlowerContainer/Tulipe" unique_id=2004415338]
+position = Vector2(635, 692)
+shape = SubResource("CircleShape2D_3kwiq")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1213465072]
+
+[node name="FlowerDescription" parent="CanvasLayer" unique_id=1287270015 instance=ExtResource("6_ah2ms")]
+unique_name_in_owner = true
+visible = false

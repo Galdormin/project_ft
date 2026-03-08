@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FlowerData" format=3 uid="uid://vo4nswfx8yh4"]
+
+[ext_resource type="Script" uid="uid://bkxt6gm20wutv" path="res://systems/types/flower_data.gd" id="1_8ohra"]
+[ext_resource type="Texture2D" uid="uid://bkaws63ejth0j" path="res://assets/flowers/rose/rose.png" id="1_m7526"]
+
+[resource]
+script = ExtResource("1_8ohra")
+name = "Rose"
+description = "La rose est la fleur du rosier, arbuste du genre Rosa et de la famille des Rosaceae. La rose des jardins se caractérise avant tout par la multiplication de ses pétales imbriqués, qui lui donne sa forme caractéristique."
+image = ExtResource("1_m7526")
+metadata/_custom_type_script = "uid://bkxt6gm20wutv"

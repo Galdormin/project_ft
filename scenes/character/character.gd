@@ -2,10 +2,10 @@
 class_name Character
 extends Node2D
 
-@export var portrait: CharacterPortrait:
-    set(p_portrait):
-        if p_portrait != portrait:
-            portrait = p_portrait
+@export var character_data: CharacterData:
+    set(p_character_data):
+        if p_character_data != character_data:
+            character_data = p_character_data
             _update_sprite()
 @export var mood: CharacterPortrait.Mood:
     set(p_mood):
@@ -39,10 +39,9 @@ func reset_dialogue_line() -> void:
 
 func set_dialogue_line(dialogue_line: DialogueLine) -> void:
     # Set Emotion
-    for tag in dialogue_line.tags:
-        if CharacterPortrait.is_mood(tag):
-            mood = CharacterPortrait.as_mood(tag)
-            break
+    var mood_tag = dialogue_line.get_tag_value("mood")
+    if mood_tag and CharacterPortrait.is_mood(mood_tag):
+        mood = CharacterPortrait.as_mood(mood_tag)
     
      # Set line
     if dialogue_line:
@@ -56,17 +55,17 @@ func _update_sprite() -> void:
     if not is_node_ready():
         return
     
-    if not portrait:
-        Loggie.warn("Try to _update_sprite with no CharacterPortrait.")
+    if not character_data:
+        Loggie.warn("Try to _update_sprite with no CharacterData.")
         return
     
-    if mood in portrait.sprites:
-        sprite.texture = portrait.sprites[mood]
+    if mood in character_data.portrait.sprites:
+        sprite.texture = character_data.portrait.sprites[mood]
     
     # Setup Scale
     sprite.scale = Vector2.ONE * (height / sprite.texture.get_height())
     position.y = - height / 2
     
     # Setup Orientation
-    if orientation != portrait.default_orientation:
+    if orientation != character_data.portrait.default_orientation:
         sprite.scale.x *= -1

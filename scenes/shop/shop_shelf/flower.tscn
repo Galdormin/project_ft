@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cwpfovtubc0x2"]
+
+[ext_resource type="Script" uid="uid://bdbpfbe8qctrj" path="res://scenes/shop/shop_shelf/flower.gd" id="1_5sr1k"]
+
+[node name="Flower" type="Area2D" unique_id=1280963341]
+script = ExtResource("1_5sr1k")
